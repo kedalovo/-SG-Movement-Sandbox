@@ -1,0 +1,99 @@
+[gd_scene load_steps=12 format=3 uid="uid://bypwv3voslknq"]
+
+[ext_resource type="Script" uid="uid://cxc4k15g4v7se" path="res://Game/game.gd" id="1_bk3v5"]
+[ext_resource type="PackedScene" uid="uid://2oxdgu03lnbk" path="res://addons/character-controller/example/main/player.tscn" id="2_1r4le"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_4oc8p"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_bk3v5"]
+sky_material = SubResource("ProceduralSkyMaterial_4oc8p")
+
+[sub_resource type="Environment" id="Environment_1r4le"]
+background_mode = 2
+sky = SubResource("Sky_bk3v5")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4oc8p"]
+size = Vector3(50, 1, 50)
+
+[sub_resource type="BoxMesh" id="BoxMesh_bk3v5"]
+size = Vector3(50, 1, 50)
+
+[sub_resource type="Gradient" id="Gradient_1r4le"]
+colors = PackedColorArray(1, 1, 1, 1, 0.489622, 0.489622, 0.489622, 1)
+metadata/_snap_enabled = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_7raqb"]
+seed = 18
+frequency = 0.0096
+fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_jcm6v"]
+in_3d_space = true
+color_ramp = SubResource("Gradient_1r4le")
+noise = SubResource("FastNoiseLite_7raqb")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fwxkx"]
+albedo_texture = SubResource("NoiseTexture2D_jcm6v")
+albedo_texture_force_srgb = true
+
+[node name="Game" type="Node3D"]
+script = ExtResource("1_bk3v5")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1r4le")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+light_energy = 0.5
+shadow_enabled = true
+
+[node name="Floor" type="StaticBody3D" parent="."]
+
+[node name="Collision" type="CollisionShape3D" parent="Floor"]
+shape = SubResource("BoxShape3D_4oc8p")
+
+[node name="Mesh" type="CSGMesh3D" parent="Floor"]
+mesh = SubResource("BoxMesh_bk3v5")
+material = SubResource("StandardMaterial3D_fwxkx")
+
+[node name="Player" parent="." instance=ExtResource("2_1r4le")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 18, 0)
+
+[node name="UI Viewport" type="SubViewportContainer" parent="."]
+offset_right = 1920.0
+offset_bottom = 1080.0
+
+[node name="SubViewport" type="SubViewport" parent="UI Viewport"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="UI" type="Control" parent="UI Viewport/SubViewport"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI Viewport/SubViewport/UI"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="UI Viewport/SubViewport/UI/VBoxContainer"]
+layout_mode = 2
+text = "Test1"
+
+[node name="Label2" type="Label" parent="UI Viewport/SubViewport/UI/VBoxContainer"]
+layout_mode = 2
+text = "Test2"
+
+[node name="Label3" type="Label" parent="UI Viewport/SubViewport/UI/VBoxContainer"]
+layout_mode = 2
+text = "Test3"
