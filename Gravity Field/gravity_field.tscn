@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://qc706voncvlu"]
+
+[ext_resource type="Script" uid="uid://datykrp7a6ty7" path="res://gravity_field.gd" id="1_uoc06"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_geodj"]
+
+[node name="Gravity Field" type="Node3D"]
+script = ExtResource("1_uoc06")
+field_size = Vector3(1, 1, 1)
+
+[node name="Area" type="Area3D" parent="."]
+
+[node name="Collision" type="CollisionShape3D" parent="Area"]
+shape = SubResource("BoxShape3D_geodj")

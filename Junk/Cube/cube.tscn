@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://bifltncmrycki"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_0c41k"]
+size = Vector3(0.3, 0.3, 0.3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wkgvn"]
+size = Vector3(0.3, 0.3, 0.3)
+
+[node name="Cube" type="RigidBody3D" groups=["Junk"]]
+collision_layer = 4
+collision_mask = 7
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="."]
+mesh = SubResource("BoxMesh_0c41k")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_wkgvn")

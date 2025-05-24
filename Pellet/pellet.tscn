@@ -1,0 +1,41 @@
+[gd_scene load_steps=6 format=3 uid="uid://b81rxadrvply1"]
+
+[ext_resource type="Script" uid="uid://ddv4rsbf366vf" path="res://Pellet/pellet.gd" id="1_glmsb"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_22ug1"]
+albedo_color = Color(0.359946, 0.402284, 1, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_glmsb"]
+material = SubResource("StandardMaterial3D_22ug1")
+radius = 0.2
+height = 0.4
+radial_segments = 16
+rings = 8
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_u0jda"]
+radius = 0.2
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_44i08"]
+radius = 3.0
+
+[node name="Pellet" type="RigidBody3D"]
+contact_monitor = true
+max_contacts_reported = 5
+script = ExtResource("1_glmsb")
+force = 10
+repel_force = 5
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="."]
+mesh = SubResource("SphereMesh_glmsb")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_u0jda")
+
+[node name="Area" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 6
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area"]
+shape = SubResource("SphereShape3D_44i08")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

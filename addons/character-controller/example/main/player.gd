@@ -1,6 +1,10 @@
 extends FPSController3D
 class_name Player
 
+
+signal shooting(pos: Vector3, direction: Vector3)
+
+
 ## Example script that extends [CharacterController3D] through 
 ## [FPSController3D].
 ## 
@@ -23,6 +27,10 @@ class_name Player
 @export var input_fly_mode_action_name := "move_fly_mode"
 
 @export var underwater_env: Environment
+
+@onready var shoot_reference: Marker3D = $"Head/Shoot Reference"
+
+var was_mouse_pressed: bool
 
 
 func _ready():
@@ -55,6 +63,14 @@ func _input(event: InputEvent) -> void:
 	# Mouse look (only if the mouse is captured).
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		rotate_head(event.screen_relative)
+	if event is InputEventMouseButton:
+		var e: = event as InputEventMouseButton
+		if e.button_index == MOUSE_BUTTON_LEFT:
+			if e.is_pressed() and !was_mouse_pressed:
+				was_mouse_pressed = true
+				shooting.emit(shoot_reference.global_position,(shoot_reference.global_position - head.global_position).normalized())
+			elif !e.is_pressed():
+				was_mouse_pressed = false
 
 
 #func _on_controller_emerged():

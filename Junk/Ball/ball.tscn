@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://co3pqucidhb51"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_3jh3o"]
+radius = 0.1
+height = 0.2
+radial_segments = 8
+rings = 4
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_tv11p"]
+radius = 0.1
+
+[node name="Ball" type="RigidBody3D" groups=["Junk"]]
+collision_layer = 4
+collision_mask = 7
+mass = 0.2
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="."]
+mesh = SubResource("SphereMesh_3jh3o")
+
+[node name="CSGBakedCollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_tv11p")

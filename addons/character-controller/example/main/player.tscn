@@ -6,6 +6,8 @@
 [ext_resource type="PackedScene" uid="uid://b3eh3rtus6aci" path="res://addons/character-controller/example/main/audios/player_audios.tscn" id="4_ux8kv"]
 
 [node name="Player" instance=ExtResource("1_fbpun")]
+collision_layer = 2
+platform_floor_layers = 1
 script = ExtResource("2_8r0nc")
 input_back_action_name = "move_backward"
 input_forward_action_name = "move_forward"
@@ -16,6 +18,9 @@ input_jump_action_name = "move_jump"
 input_crouch_action_name = "move_crouch"
 input_fly_mode_action_name = "move_fly_mode"
 underwater_env = ExtResource("3_dxksd")
+
+[node name="Shoot Reference" type="Marker3D" parent="Head" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
 
 [node name="Player Audios" parent="." index="9" instance=ExtResource("4_ux8kv")]
 
