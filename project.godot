@@ -15,6 +15,10 @@ run/main_scene="uid://b1jnwwja8y8r6"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+Enums="*res://Globals/enums.gd"
+
 [display]
 
 window/size/viewport_width=1920
@@ -82,6 +86,8 @@ move_fly_mode={
 3d_physics/layer_1="Floor"
 3d_physics/layer_2="Player"
 3d_physics/layer_3="Junk"
+3d_physics/layer_4="Gravity Areas"
+3d_physics/layer_5="Pellet"
 
 [physics]
 

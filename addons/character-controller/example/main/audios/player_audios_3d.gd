@@ -56,6 +56,8 @@ func _on_controller_stepped():
 	
 func _get_audio_interact():
 	var k_col = character_body.get_last_slide_collision()
+	if k_col == null:
+		return
 	var collision = k_col.get_collider(0)
 	_get_audio_interact_of_object(collision)
 	

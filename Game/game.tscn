@@ -1,8 +1,9 @@
-[gd_scene load_steps=13 format=3 uid="uid://bypwv3voslknq"]
+[gd_scene load_steps=14 format=3 uid="uid://bypwv3voslknq"]
 
 [ext_resource type="Script" uid="uid://cxc4k15g4v7se" path="res://Game/game.gd" id="1_bk3v5"]
 [ext_resource type="PackedScene" uid="uid://2oxdgu03lnbk" path="res://addons/character-controller/example/main/player.tscn" id="2_1r4le"]
 [ext_resource type="Texture2D" uid="uid://cxuxd1ybqe1mw" path="res://Resources/Skybox/Skybox.png" id="2_7raqb"]
+[ext_resource type="PackedScene" uid="uid://qc706voncvlu" path="res://Gravity Field/gravity_field.tscn" id="4_jcm6v"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_jcm6v"]
 panorama = ExtResource("2_7raqb")
@@ -15,6 +16,10 @@ background_mode = 2
 sky = SubResource("Sky_bk3v5")
 tonemap_mode = 2
 glow_enabled = true
+fog_light_energy = 0.0
+fog_sky_affect = 0.0
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4oc8p"]
 size = Vector3(50, 1, 50)
@@ -71,5 +76,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 18, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.26031, 0)
 
 [node name="Pellets" type="Node3D" parent="."]
+
+[node name="Gravity Field" parent="." instance=ExtResource("4_jcm6v")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 16.9677)
+field_size = Vector3(15, 15, 15)
+gravity_type = 0
+gravity_direction = Vector3(0, -1, 0)
+
+[node name="Gravity Field2" parent="." instance=ExtResource("4_jcm6v")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.53023, -14.4393)
+field_size = Vector3(2, 2, 10)
+gravity_type = 0
+gravity_direction = Vector3(0, -1, 0)
 
 [connection signal="shooting" from="Player" to="." method="_on_player_shooting"]
