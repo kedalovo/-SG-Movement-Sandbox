@@ -80,13 +80,18 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.26031, 0)
 [node name="Gravity Field" parent="." instance=ExtResource("4_jcm6v")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 16.9677)
 field_size = Vector3(15, 15, 15)
-gravity_type = 0
-gravity_direction = Vector3(0, -1, 0)
 
 [node name="Gravity Field2" parent="." instance=ExtResource("4_jcm6v")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.53023, -14.4393)
 field_size = Vector3(2, 2, 10)
-gravity_type = 0
-gravity_direction = Vector3(0, -1, 0)
+
+[node name="Node3D" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.1233, 2.4702, 0)
+
+[node name="RayCast3D" type="RayCast3D" parent="Node3D"]
+target_position = Vector3(0, 0, 5)
+
+[node name="RayCast3D2" type="RayCast3D" parent="Node3D"]
+target_position = Vector3(0, 5, 0)
 
 [connection signal="shooting" from="Player" to="." method="_on_player_shooting"]

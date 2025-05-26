@@ -14,8 +14,13 @@ const PELLET = preload("res://Pellet/pellet.tscn")
 @export var amount_of_balls: int = 0
 @export var amount_of_cubes: int = 0
 
+@onready var ray1: RayCast3D = $Node3D/RayCast3D
+@onready var ray2: RayCast3D = $Node3D/RayCast3D2
 
 func _ready() -> void:
+	
+	ray2.target_position = ray2.target_position.rotated(ray2.target_position.cross(ray1.target_position).normalized(), deg_to_rad(45))
+	
 	for i in amount_of_cans:
 		var can: = CAN.instantiate()
 		junk.add_child(can)

@@ -2,6 +2,7 @@ extends Node
 
 class_name enums
 
+## Default gravity, which is 9.8
 const DEFAULT_GRAVITY: float = 9.8
 
 enum gravity_field_types ## Gravity field types

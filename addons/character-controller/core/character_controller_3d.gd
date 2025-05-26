@@ -188,6 +188,9 @@ var _direction_base_node : Node3D
 ## Swimming ability.
 @onready var swim_ability: SwimAbility3D = get_node(NodePath("Swim Ability 3D"))
 
+## Gravity drift ability.
+@onready var drift_ability: DriftAbility3D = get_node(NodePath("Drift Ability 3D"))
+
 ## Stores normal speed
 @onready var _normal_speed : float = speed
 
@@ -197,6 +200,8 @@ var _last_is_on_floor := false
 ## Default controller height, affects collider
 var _default_height : float
 
+var is_in_gravity_field: bool = false
+var head_rotation: Vector3
 
 ## Loads all character controller skills and sets necessary variables
 func setup():
@@ -216,9 +221,10 @@ func move(_delta: float, input_axis := Vector2.ZERO, input_jump := false, input_
 	if not jump_ability.is_actived() and not is_fly_mode() and not is_submerged() and not is_floating():
 		velocity.y -= gravity * _delta
 	
-	swim_ability.set_active(!fly_ability.is_actived())
+	#swim_ability.set_active(!fly_ability.is_actived())
 	jump_ability.set_active(input_jump and is_on_floor() and not head_check.is_colliding())
-	walk_ability.set_active(not is_fly_mode() and not swim_ability.is_floating())
+	walk_ability.set_active(not is_fly_mode() and not swim_ability.is_floating() and !is_in_gravity_field)
+	drift_ability.set_active(is_in_gravity_field and not is_fly_mode())
 	crouch_ability.set_active(input_crouch and is_on_floor() and not is_floating() and not is_submerged() and not is_fly_mode())
 	sprint_ability.set_active(input_sprint and is_on_floor() and  input_axis.y >= 0.5 and !is_crouching() and not is_fly_mode() and not swim_ability.is_floating() and not swim_ability.is_submerged())
 	
@@ -228,7 +234,10 @@ func move(_delta: float, input_axis := Vector2.ZERO, input_jump := false, input_
 	speed = _normal_speed * multiplier
 	
 	for ability in _abilities:
-		velocity = ability.apply(velocity, speed, is_on_floor(), direction, _delta)
+		if ability is DriftAbility3D:
+			velocity = ability.apply(velocity, speed, is_on_floor(), direction, _delta)
+		else:
+			velocity = ability.apply(velocity, speed, is_on_floor(), direction, _delta)
 	
 	move_and_slide()
 	_horizontal_velocity = Vector3(velocity.x, 0.0, velocity.z)

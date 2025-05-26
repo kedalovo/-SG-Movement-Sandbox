@@ -28,8 +28,6 @@ edge_fade = 0.001
 
 [node name="Gravity Field" type="Node3D"]
 script = ExtResource("1_uoc06")
-gravity_type = null
-gravity_direction = null
 
 [node name="Area" type="Area3D" parent="."]
 collision_layer = 8
@@ -58,3 +56,6 @@ color_ramp = SubResource("Gradient_pmoko")
 [node name="Fog" type="FogVolume" parent="."]
 size = Vector3(1, 1, 1)
 material = SubResource("FogMaterial_uoc06")
+
+[connection signal="body_entered" from="Area" to="." method="_on_area_body_entered"]
+[connection signal="body_exited" from="Area" to="." method="_on_area_body_exited"]

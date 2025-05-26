@@ -1,12 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://2oxdgu03lnbk"]
+[gd_scene load_steps=6 format=3 uid="uid://2oxdgu03lnbk"]
 
 [ext_resource type="PackedScene" uid="uid://8oy3xm2sff8" path="res://addons/character-controller/fps/fps_controller_3d.tscn" id="1_fbpun"]
 [ext_resource type="Script" uid="uid://b1l8cxk2wm3p1" path="res://addons/character-controller/example/main/player.gd" id="2_8r0nc"]
 [ext_resource type="Environment" uid="uid://b3cn01u84faiy" path="res://addons/character-controller/example/main/underwater.tres" id="3_dxksd"]
+[ext_resource type="Script" uid="uid://csllitstrws5s" path="res://addons/character-controller/abilities/drift_ability_3d.gd" id="4_67sb2"]
 [ext_resource type="PackedScene" uid="uid://b3eh3rtus6aci" path="res://addons/character-controller/example/main/audios/player_audios.tscn" id="4_ux8kv"]
 
 [node name="Player" instance=ExtResource("1_fbpun")]
 collision_layer = 2
+collision_mask = 9
 platform_floor_layers = 1
 script = ExtResource("2_8r0nc")
 input_back_action_name = "move_backward"
@@ -18,11 +20,16 @@ input_jump_action_name = "move_jump"
 input_crouch_action_name = "move_crouch"
 input_fly_mode_action_name = "move_fly_mode"
 underwater_env = ExtResource("3_dxksd")
+abilities_path = Array[NodePath]([NodePath("Crouch Ability 3D"), NodePath("Sprint Ability 3D"), NodePath("Walk Ability 3D"), NodePath("Jump Ability 3D"), NodePath("Fly Ability 3D"), NodePath("Swim Ability 3D"), NodePath("Drift Ability 3D")])
+
+[node name="Drift Ability 3D" type="Node3D" parent="." index="8"]
+script = ExtResource("4_67sb2")
+air_control = 0.05
 
 [node name="Shoot Reference" type="Marker3D" parent="Head" index="3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
 
-[node name="Player Audios" parent="." index="9" instance=ExtResource("4_ux8kv")]
+[node name="Player Audios" parent="." index="10" instance=ExtResource("4_ux8kv")]
 
-[node name="Camera" type="Camera3D" parent="." index="10"]
+[node name="Camera" type="Camera3D" parent="." index="11"]
 current = true
