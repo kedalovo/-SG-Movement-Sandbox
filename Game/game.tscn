@@ -1,8 +1,8 @@
 [gd_scene load_steps=14 format=3 uid="uid://bypwv3voslknq"]
 
 [ext_resource type="Script" uid="uid://cxc4k15g4v7se" path="res://Game/game.gd" id="1_bk3v5"]
-[ext_resource type="PackedScene" uid="uid://2oxdgu03lnbk" path="res://addons/character-controller/example/main/player.tscn" id="2_1r4le"]
 [ext_resource type="Texture2D" uid="uid://cxuxd1ybqe1mw" path="res://Resources/Skybox/Skybox.png" id="2_7raqb"]
+[ext_resource type="PackedScene" uid="uid://by5ae6ufoqsbk" path="res://Player/player.tscn" id="4_fwxkx"]
 [ext_resource type="PackedScene" uid="uid://qc706voncvlu" path="res://Gravity Field/gravity_field.tscn" id="4_jcm6v"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_jcm6v"]
@@ -69,9 +69,6 @@ shape = SubResource("BoxShape3D_4oc8p")
 mesh = SubResource("BoxMesh_bk3v5")
 material = SubResource("StandardMaterial3D_fwxkx")
 
-[node name="Player" parent="." instance=ExtResource("2_1r4le")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 18, 0)
-
 [node name="Junk" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.26031, 0)
 
@@ -85,13 +82,5 @@ field_size = Vector3(15, 15, 15)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.53023, -14.4393)
 field_size = Vector3(2, 2, 10)
 
-[node name="Node3D" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.1233, 2.4702, 0)
-
-[node name="RayCast3D" type="RayCast3D" parent="Node3D"]
-target_position = Vector3(0, 0, 5)
-
-[node name="RayCast3D2" type="RayCast3D" parent="Node3D"]
-target_position = Vector3(0, 5, 0)
-
-[connection signal="shooting" from="Player" to="." method="_on_player_shooting"]
+[node name="Player" parent="." instance=ExtResource("4_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)

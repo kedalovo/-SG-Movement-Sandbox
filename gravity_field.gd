@@ -76,11 +76,11 @@ func _ready() -> void:
 
 func _on_area_body_entered(body: Node3D) -> void:
 	if body is Player:
-		body.is_in_gravity_field = true
-		body.gravity = area.gravity * body.gravity_multiplier
+		body.is_in_gravity = true
+		#body.gravity = area.gravity * body.gravity_multiplier
 
 
 func _on_area_body_exited(body: Node3D) -> void:
 	if body is Player:
-		body.is_in_gravity_field = false
-		body.gravity = enums.DEFAULT_GRAVITY * body.gravity_multiplier
+		body.is_in_gravity = false
+		#body.gravity = enums.DEFAULT_GRAVITY * body.gravity_multiplier

@@ -1,0 +1,41 @@
+[gd_scene load_steps=4 format=3 uid="uid://by5ae6ufoqsbk"]
+
+[ext_resource type="Script" uid="uid://4pxtmb5xig5j" path="res://Player/player.gd" id="1_4flbx"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_sh265"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4flbx"]
+
+[node name="Player" type="CharacterBody3D"]
+collision_layer = 2
+collision_mask = 9
+platform_floor_layers = 1
+script = ExtResource("1_4flbx")
+acceleration = 35.0
+mouse_sensitivity = 0.15
+
+[node name="Mesh" type="CSGMesh3D" parent="."]
+mesh = SubResource("CapsuleMesh_sh265")
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_4flbx")
+
+[node name="Camera Gymbal" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.507404, 0)
+
+[node name="Position Offset" type="Marker3D" parent="Camera Gymbal"]
+
+[node name="Camera" type="Camera3D" parent="Camera Gymbal/Position Offset"]
+current = true
+
+[node name="Right Marker" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+
+[node name="Up Marker" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="Coyote Timer" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
+
+[connection signal="timeout" from="Coyote Timer" to="." method="_on_coyote_timer_timeout"]
