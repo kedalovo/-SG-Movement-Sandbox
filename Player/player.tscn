@@ -28,6 +28,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.507404, 0)
 [node name="Camera" type="Camera3D" parent="Camera Gymbal/Position Offset"]
 current = true
 
+[node name="Shoot Reference" type="Marker3D" parent="Camera Gymbal"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+
 [node name="Right Marker" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
 
@@ -38,4 +41,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 wait_time = 0.2
 one_shot = true
 
+[node name="Shoot Timer" type="Timer" parent="."]
+wait_time = 0.2
+
 [connection signal="timeout" from="Coyote Timer" to="." method="_on_coyote_timer_timeout"]
+[connection signal="timeout" from="Shoot Timer" to="." method="_on_shoot_timer_timeout"]

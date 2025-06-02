@@ -52,4 +52,4 @@ func _on_player_shooting(pos: Vector3, direction: Vector3) -> void:
 	var pellet := PELLET.instantiate()
 	pellets.add_child(pellet)
 	pellet.global_position = pos
-	pellet.apply_impulse(direction * pellet.force)
+	pellet.apply_impulse(direction.normalized() * pellet.force)

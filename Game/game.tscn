@@ -74,13 +74,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.26031, 0)
 
 [node name="Pellets" type="Node3D" parent="."]
 
-[node name="Gravity Field" parent="." instance=ExtResource("4_jcm6v")]
+[node name="Gravity Fields" type="Node3D" parent="."]
+
+[node name="Gravity Field" parent="Gravity Fields" instance=ExtResource("4_jcm6v")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 16.9677)
 field_size = Vector3(15, 15, 15)
 
-[node name="Gravity Field2" parent="." instance=ExtResource("4_jcm6v")]
+[node name="Gravity Field2" parent="Gravity Fields" instance=ExtResource("4_jcm6v")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.53023, -14.4393)
 field_size = Vector3(2, 2, 10)
 
 [node name="Player" parent="." instance=ExtResource("4_fwxkx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+
+[connection signal="shooting" from="Player" to="." method="_on_player_shooting"]

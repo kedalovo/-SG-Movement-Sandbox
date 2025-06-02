@@ -1,6 +1,10 @@
 extends CharacterBody3D
 
+
 class_name Player
+
+
+signal shooting(pos: Vector3, direction: Vector3)
 
 
 @export var speed: float = 5.0
@@ -12,6 +16,9 @@ class_name Player
 @export var air_friction: float = 0.1
 @export var gravity_control: float = 0.15
 
+@export var zoom_limit: float = 5.0
+@export var zoom_force: float = 0.2
+
 @export_range(0.1, 2.0, 0.01) var mouse_sensitivity: float = 1.0
 @export var max_head_angle: float = 75.0
 @export var min_head_angle: float = -75.0
@@ -19,8 +26,11 @@ class_name Player
 @onready var camera_gymbal: Marker3D = $"Camera Gymbal"
 @onready var right_marker: Marker3D = $"Right Marker"
 @onready var up_marker: Marker3D = $"Up Marker"
+@onready var shoot_reference: Marker3D = $"Camera Gymbal/Shoot Reference"
+@onready var position_offset: Marker3D = $"Camera Gymbal/Position Offset"
 
 @onready var coyote_timer: Timer = $"Coyote Timer"
+@onready var shoot_timer: Timer = $"Shoot Timer"
 
 var direction: Vector3 = Vector3.ZERO
 
@@ -43,6 +53,7 @@ var is_in_gravity: bool = false:
 var is_moving: bool = false
 var is_coyote_time: bool = false
 var has_landed: bool = false
+var can_shoot: bool = true
 
 
 func _input(event: InputEvent) -> void:
@@ -59,6 +70,16 @@ func _input(event: InputEvent) -> void:
 			var final_x_rotation = camera_gymbal.rotation.x + deg_to_rad(-event.screen_relative.y) * mouse_sensitivity
 			if final_x_rotation > deg_to_rad(min_head_angle) and final_x_rotation < deg_to_rad(max_head_angle):
 				camera_gymbal.rotation.x = final_x_rotation
+	if event is InputEventMouseButton:
+		var e := event as InputEventMouseButton
+		if e.is_pressed() and e.button_index == MOUSE_BUTTON_LEFT and can_shoot:
+			can_shoot = false
+			shoot_timer.start()
+			shooting.emit(global_position, shoot_reference.global_position - global_position)
+		elif e.is_pressed() and e.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			position_offset.position.z = clampf(position_offset.position.z + zoom_force, 0.0, zoom_limit)
+		elif e.is_pressed() and e.button_index == MOUSE_BUTTON_WHEEL_UP:
+			position_offset.position.z = clampf(position_offset.position.z - zoom_force, 0.0, zoom_limit)
 
 
 func _physics_process(delta: float) -> void:
@@ -123,13 +144,17 @@ func _physics_process(delta: float) -> void:
 
 func toggle_gravity(on: bool) -> void:
 	if on:
-		rotation.x = camera_gymbal.rotation.x
-		camera_gymbal.rotation.x = 0.0
+		get_tree().create_tween().tween_property(self, "rotation:x", camera_gymbal.rotation.x, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+		get_tree().create_tween().tween_property(camera_gymbal, "rotation:x", 0.0, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	else:
-		camera_gymbal.rotation.x = rotation.x
-		rotation.x = 0.0
+		get_tree().create_tween().tween_property(camera_gymbal, "rotation:x", rotation.x, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+		get_tree().create_tween().tween_property(self, "rotation:x", 0.0, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 		get_tree().create_tween().tween_property(self, "rotation:z", 0.0, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 
 
 func _on_coyote_timer_timeout() -> void:
 	is_coyote_time = false
+
+
+func _on_shoot_timer_timeout() -> void:
+	can_shoot = true
