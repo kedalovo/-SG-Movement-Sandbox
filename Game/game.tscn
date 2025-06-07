@@ -1,9 +1,11 @@
-[gd_scene load_steps=14 format=3 uid="uid://bypwv3voslknq"]
+[gd_scene load_steps=17 format=3 uid="uid://bypwv3voslknq"]
 
 [ext_resource type="Script" uid="uid://cxc4k15g4v7se" path="res://Game/game.gd" id="1_bk3v5"]
 [ext_resource type="Texture2D" uid="uid://cxuxd1ybqe1mw" path="res://Resources/Skybox/Skybox.png" id="2_7raqb"]
 [ext_resource type="PackedScene" uid="uid://by5ae6ufoqsbk" path="res://Player/player.tscn" id="4_fwxkx"]
 [ext_resource type="PackedScene" uid="uid://qc706voncvlu" path="res://Gravity Field/gravity_field.tscn" id="4_jcm6v"]
+[ext_resource type="PackedScene" uid="uid://bllfxbi22nu4k" path="res://Platform/platform.tscn" id="5_fwxkx"]
+[ext_resource type="PackedScene" uid="uid://cgeag00tu5uig" path="res://Checkpoint/checkpoint.tscn" id="6_qmv3x"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_jcm6v"]
 panorama = ExtResource("2_7raqb")
@@ -44,6 +46,8 @@ noise = SubResource("FastNoiseLite_7raqb")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fwxkx"]
 albedo_texture = SubResource("NoiseTexture2D_jcm6v")
 albedo_texture_force_srgb = true
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_fwxkx"]
 
 [node name="Game" type="Node3D"]
 script = ExtResource("1_bk3v5")
@@ -87,4 +91,66 @@ field_size = Vector3(2, 2, 10)
 [node name="Player" parent="." instance=ExtResource("4_fwxkx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
 
+[node name="Platforms" type="Node3D" parent="."]
+
+[node name="Platform" parent="Platforms" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.0366, 0.792136, -10)
+size = Vector3(10, 0.2, 10)
+destination_pos = Vector3(10, 10, 0)
+time = 5.0
+wait_time = 2.0
+
+[node name="Platform2" parent="Platforms" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(0.968239, -0.250025, 0, 0.250025, 0.968239, 0, 0, 0, 1, 11.7556, 1.05515, 0)
+size = Vector3(5, 0.1, 3)
+
+[node name="Platform3" parent="Platforms" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(0.88061, -0.473842, 0, 0.473842, 0.88061, 0, 0, 0, 1, 11.7556, 1.60483, -3.6789)
+size = Vector3(5, 0.1, 3)
+
+[node name="Platform4" parent="Platforms" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(0.704064, -0.710136, 0, 0.710136, 0.704064, 0, 0, 0, 1, 11.7556, 2.18562, -7.62287)
+size = Vector3(5, 0.1, 3)
+
+[node name="Platform5" parent="Platforms" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, 0, -38)
+size = Vector3(20, 1, 20)
+rot_speed = Vector3(0, 0.5, 0)
+
+[node name="Jumping Cubes 1" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 71.8864, 0, -85.5023)
+
+[node name="Platform" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 0, 34)
+
+[node name="Platform2" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.8001, 0, 38.3027)
+
+[node name="Platform3" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.6639, 0, 33.63)
+
+[node name="Platform4" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.8537, 0, 36.7575)
+
+[node name="Platform5" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.4378, 0, 31.4226)
+
+[node name="Platform6" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.2112, 0, 33.2891)
+
+[node name="Platform7" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.0139, 0, 29.8803)
+
+[node name="World Boundary" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.53568, 0)
+collision_layer = 0
+collision_mask = 2
+
+[node name="Collision" type="CollisionShape3D" parent="World Boundary"]
+shape = SubResource("WorldBoundaryShape3D_fwxkx")
+
+[node name="Checkpoint" parent="." instance=ExtResource("6_qmv3x")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 51.2225, 1, -51.877)
+
 [connection signal="shooting" from="Player" to="." method="_on_player_shooting"]
+[connection signal="body_entered" from="World Boundary" to="." method="_on_world_boundary_body_entered"]

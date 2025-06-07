@@ -2,8 +2,6 @@
 
 [ext_resource type="Script" uid="uid://bv7dmxyjd1djj" path="res://Platform/platform.gd" id="1_0v4dy"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_7mcu4"]
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0v4dy"]
 shading_mode = 0
 albedo_color = Color(1, 0, 0, 1)
@@ -16,6 +14,20 @@ radial_segments = 8
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g263t"]
 shading_mode = 0
 albedo_color = Color(0, 1, 0.0390625, 1)
+
+[sub_resource type="Animation" id="Animation_0fui7"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CSGMesh3D:position:y")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
 
 [sub_resource type="Animation" id="Animation_4o3py"]
 resource_name = "bob"
@@ -34,38 +46,18 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 2, 4)
 }
 
-[sub_resource type="Animation" id="Animation_0fui7"]
-length = 0.001
-tracks/0/type = "bezier"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("CSGMesh3D:position:y")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_b1qim"]
 _data = {
 &"RESET": SubResource("Animation_0fui7"),
 &"bob": SubResource("Animation_4o3py")
 }
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_0v4dy"]
+
 [node name="Platform" type="Node3D"]
 script = ExtResource("1_0v4dy")
 
-[node name="Body" type="AnimatableBody3D" parent="."]
-
-[node name="Mesh" type="CSGBox3D" parent="Body"]
-
-[node name="Shape" type="CollisionShape3D" parent="Body"]
-shape = SubResource("BoxShape3D_7mcu4")
-
 [node name="Destination" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.75489)
 
 [node name="CSGCylinder3D" type="CSGCylinder3D" parent="Destination"]
 radius = 0.3
@@ -82,3 +74,19 @@ libraries = {
 &"": SubResource("AnimationLibrary_b1qim")
 }
 autoplay = "bob"
+
+[node name="Wait Timer" type="Timer" parent="."]
+one_shot = true
+
+[node name="Body" type="AnimatableBody3D" parent="."]
+collision_mask = 22
+sync_to_physics = false
+
+[node name="Mesh" type="CSGBox3D" parent="Body"]
+
+[node name="Shape" type="CollisionShape3D" parent="Body"]
+shape = SubResource("BoxShape3D_0v4dy")
+
+[node name="Pivot" type="Node3D" parent="."]
+
+[connection signal="timeout" from="Wait Timer" to="." method="_on_wait_timer_timeout"]

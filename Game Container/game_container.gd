@@ -11,3 +11,4 @@ extends Control
 func _process(_delta: float) -> void:
 	label.text = str(game.player.rotation)
 	label_2.text = str(game.player.shoot_reference.global_position)
+	label_3.text = str(rad_to_deg(game.player.get_floor_normal().angle_to(Vector3.UP)))

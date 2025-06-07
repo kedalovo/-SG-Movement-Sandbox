@@ -23,6 +23,8 @@ signal shooting(pos: Vector3, direction: Vector3)
 @export var max_head_angle: float = 75.0
 @export var min_head_angle: float = -75.0
 
+@export var bounce_factor: float = 1.0
+
 @onready var camera_gymbal: Marker3D = $"Camera Gymbal"
 @onready var right_marker: Marker3D = $"Right Marker"
 @onready var up_marker: Marker3D = $"Up Marker"
@@ -33,6 +35,8 @@ signal shooting(pos: Vector3, direction: Vector3)
 @onready var shoot_timer: Timer = $"Shoot Timer"
 
 var direction: Vector3 = Vector3.ZERO
+
+var checkpoint: Vector3 = Vector3(0.0, 3.0, 0.0)
 
 var additional_speed: float = 0.0
 
@@ -139,7 +143,9 @@ func _physics_process(delta: float) -> void:
 			velocity.x = new_velocity.x
 			velocity.z = new_velocity.y
 
-	move_and_slide()
+	var col := move_and_slide()
+	if col and is_in_gravity:
+		velocity = velocity.bounce(get_last_slide_collision().get_normal()) * bounce_factor
 
 
 func toggle_gravity(on: bool) -> void:
@@ -150,6 +156,11 @@ func toggle_gravity(on: bool) -> void:
 		get_tree().create_tween().tween_property(camera_gymbal, "rotation:x", rotation.x, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 		get_tree().create_tween().tween_property(self, "rotation:x", 0.0, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 		get_tree().create_tween().tween_property(self, "rotation:z", 0.0, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+
+
+func reset() -> void:
+	velocity = Vector3.ZERO
+	global_position = checkpoint
 
 
 func _on_coyote_timer_timeout() -> void:

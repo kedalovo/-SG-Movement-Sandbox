@@ -53,3 +53,8 @@ func _on_player_shooting(pos: Vector3, direction: Vector3) -> void:
 	pellets.add_child(pellet)
 	pellet.global_position = pos
 	pellet.apply_impulse(direction.normalized() * pellet.force)
+
+
+func _on_world_boundary_body_entered(body: Node3D) -> void:
+	if body is Player:
+		player.reset()

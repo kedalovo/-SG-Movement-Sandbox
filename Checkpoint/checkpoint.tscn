@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://cgeag00tu5uig"]
+
+[ext_resource type="Script" uid="uid://c1v8ivolwo6ha" path="res://Checkpoint/checkpoint.gd" id="1_fmjbl"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_vwips"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_fmjbl"]
+radial_segments = 16
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o06rg"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.257813, 0.338989, 1, 0.235294)
+
+[node name="Checkpoint" type="Node3D"]
+script = ExtResource("1_fmjbl")
+
+[node name="Area" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="Collision" type="CollisionShape3D" parent="Area"]
+shape = SubResource("SphereShape3D_vwips")
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+mesh = SubResource("CylinderMesh_fmjbl")
+material = SubResource("StandardMaterial3D_o06rg")
+
+[connection signal="body_entered" from="Area" to="." method="_on_area_body_entered"]
