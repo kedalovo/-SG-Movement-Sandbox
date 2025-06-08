@@ -56,6 +56,9 @@ _data = {
 
 [node name="Platform" type="Node3D"]
 script = ExtResource("1_0v4dy")
+time = 0.0
+ease_type = null
+trans_type = null
 
 [node name="Destination" type="Node3D" parent="."]
 
@@ -82,10 +85,10 @@ one_shot = true
 collision_mask = 22
 sync_to_physics = false
 
-[node name="Mesh" type="CSGBox3D" parent="Body"]
-
 [node name="Shape" type="CollisionShape3D" parent="Body"]
 shape = SubResource("BoxShape3D_0v4dy")
+
+[node name="Mesh" type="CSGBox3D" parent="Body/Shape"]
 
 [node name="Pivot" type="Node3D" parent="."]
 

@@ -1,10 +1,11 @@
-[gd_scene load_steps=17 format=3 uid="uid://bypwv3voslknq"]
+[gd_scene load_steps=31 format=3 uid="uid://bypwv3voslknq"]
 
 [ext_resource type="Script" uid="uid://cxc4k15g4v7se" path="res://Game/game.gd" id="1_bk3v5"]
 [ext_resource type="Texture2D" uid="uid://cxuxd1ybqe1mw" path="res://Resources/Skybox/Skybox.png" id="2_7raqb"]
 [ext_resource type="PackedScene" uid="uid://by5ae6ufoqsbk" path="res://Player/player.tscn" id="4_fwxkx"]
 [ext_resource type="PackedScene" uid="uid://qc706voncvlu" path="res://Gravity Field/gravity_field.tscn" id="4_jcm6v"]
 [ext_resource type="PackedScene" uid="uid://bllfxbi22nu4k" path="res://Platform/platform.tscn" id="5_fwxkx"]
+[ext_resource type="Script" uid="uid://bv7dmxyjd1djj" path="res://Platform/platform.gd" id="6_oomkl"]
 [ext_resource type="PackedScene" uid="uid://cgeag00tu5uig" path="res://Checkpoint/checkpoint.tscn" id="6_qmv3x"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_jcm6v"]
@@ -47,7 +48,108 @@ noise = SubResource("FastNoiseLite_7raqb")
 albedo_texture = SubResource("NoiseTexture2D_jcm6v")
 albedo_texture_force_srgb = true
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0v4dy"]
+shading_mode = 0
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_0v4dy"]
+bottom_radius = 0.001
+height = 1.5
+radial_segments = 8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g263t"]
+shading_mode = 0
+albedo_color = Color(0, 1, 0.0390625, 1)
+
+[sub_resource type="Animation" id="Animation_0fui7"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CSGMesh3D:position:y")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="Animation" id="Animation_4o3py"]
+resource_name = "bob"
+length = 4.0
+loop_mode = 1
+step = 0.1
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CSGMesh3D:position:y")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0),
+"points": PackedFloat32Array(1, 0, 0, 1, 0, 2, -1, 0, 1, 0, 1, -1, 0, 0, 0),
+"times": PackedFloat32Array(0, 2, 4)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_b1qim"]
+_data = {
+&"RESET": SubResource("Animation_0fui7"),
+&"bob": SubResource("Animation_4o3py")
+}
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_oomkl"]
+size = Vector3(80, 1, 30)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_buohc"]
+size = Vector3(80, 1, 30)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kul4i"]
+size = Vector3(80, 1, 30)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7gi1t"]
+size = Vector3(80, 1, 30)
+
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_fwxkx"]
+
+[sub_resource type="Animation" id="Animation_qmv3x"]
+resource_name = "sky_rotation"
+length = 600.0
+loop_mode = 1
+step = 100.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("WorldEnvironment:environment:sky_rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 600),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 6.28319, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_oomkl"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("WorldEnvironment:environment:sky_rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_buohc"]
+_data = {
+&"RESET": SubResource("Animation_oomkl"),
+&"sky_rotation": SubResource("Animation_qmv3x")
+}
 
 [node name="Game" type="Node3D"]
 script = ExtResource("1_bk3v5")
@@ -89,7 +191,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.53023, -14.4393)
 field_size = Vector3(2, 2, 10)
 
 [node name="Player" parent="." instance=ExtResource("4_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36.2075, 3, -85.8171)
+air_control = 0.7
 
 [node name="Platforms" type="Node3D" parent="."]
 
@@ -99,47 +202,271 @@ size = Vector3(10, 0.2, 10)
 destination_pos = Vector3(10, 10, 0)
 time = 5.0
 wait_time = 2.0
+ease_type = 2
+trans_type = 3
 
 [node name="Platform2" parent="Platforms" instance=ExtResource("5_fwxkx")]
 transform = Transform3D(0.968239, -0.250025, 0, 0.250025, 0.968239, 0, 0, 0, 1, 11.7556, 1.05515, 0)
 size = Vector3(5, 0.1, 3)
+ease_type = 2
+trans_type = 3
 
 [node name="Platform3" parent="Platforms" instance=ExtResource("5_fwxkx")]
 transform = Transform3D(0.88061, -0.473842, 0, 0.473842, 0.88061, 0, 0, 0, 1, 11.7556, 1.60483, -3.6789)
 size = Vector3(5, 0.1, 3)
+ease_type = 2
+trans_type = 3
 
 [node name="Platform4" parent="Platforms" instance=ExtResource("5_fwxkx")]
 transform = Transform3D(0.704064, -0.710136, 0, 0.710136, 0.704064, 0, 0, 0, 1, 11.7556, 2.18562, -7.62287)
 size = Vector3(5, 0.1, 3)
+ease_type = 2
+trans_type = 3
 
 [node name="Platform5" parent="Platforms" instance=ExtResource("5_fwxkx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, 0, -38)
 size = Vector3(20, 1, 20)
 rot_speed = Vector3(0, 0.5, 0)
+ease_type = 2
+trans_type = 3
+
+[node name="Platform6" parent="Platforms" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.41, 0, -85.9089)
+size = Vector3(10, 1, 10)
+ease_type = 2
+trans_type = 3
+
+[node name="Platform7" type="Node3D" parent="Platforms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.549, 15.2242, -85.9089)
+script = ExtResource("6_oomkl")
+size = Vector3(80, 1, 30)
+time = 0.0
+rot_speed = Vector3(0.2, 0, 0)
+metadata/_edit_group_ = true
+
+[node name="Destination" type="Node3D" parent="Platforms/Platform7"]
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="Platforms/Platform7/Destination"]
+radius = 0.3
+height = 0.2
+material = SubResource("StandardMaterial3D_0v4dy")
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="Platforms/Platform7/Destination"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CylinderMesh_0v4dy")
+material = SubResource("StandardMaterial3D_g263t")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Platforms/Platform7/Destination"]
+libraries = {
+&"": SubResource("AnimationLibrary_b1qim")
+}
+autoplay = "bob"
+
+[node name="Wait Timer" type="Timer" parent="Platforms/Platform7"]
+one_shot = true
+
+[node name="Body" type="AnimatableBody3D" parent="Platforms/Platform7"]
+collision_mask = 22
+sync_to_physics = false
+
+[node name="Shape" type="CollisionShape3D" parent="Platforms/Platform7/Body"]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 15, 0)
+shape = SubResource("BoxShape3D_oomkl")
+
+[node name="Mesh" type="CSGBox3D" parent="Platforms/Platform7/Body/Shape"]
+size = Vector3(80, 1, 30)
+
+[node name="Shape2" type="CollisionShape3D" parent="Platforms/Platform7/Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -15, 0)
+shape = SubResource("BoxShape3D_buohc")
+
+[node name="Mesh" type="CSGBox3D" parent="Platforms/Platform7/Body/Shape2"]
+size = Vector3(80, 1, 30)
+
+[node name="Shape3" type="CollisionShape3D" parent="Platforms/Platform7/Body"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 15)
+shape = SubResource("BoxShape3D_kul4i")
+
+[node name="Mesh" type="CSGBox3D" parent="Platforms/Platform7/Body/Shape3"]
+size = Vector3(80, 1, 30)
+
+[node name="Shape4" type="CollisionShape3D" parent="Platforms/Platform7/Body"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -15)
+shape = SubResource("BoxShape3D_7gi1t")
+
+[node name="Mesh" type="CSGBox3D" parent="Platforms/Platform7/Body/Shape4"]
+size = Vector3(80, 1, 30)
+
+[node name="Pivot" type="Node3D" parent="Platforms/Platform7"]
+
+[node name="Gravity Field" parent="Platforms/Platform7" instance=ExtResource("4_jcm6v")]
+field_size = Vector3(80, 30, 30)
 
 [node name="Jumping Cubes 1" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 71.8864, 0, -85.5023)
 
 [node name="Platform" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 0, 34)
+ease_type = 2
+trans_type = 3
 
 [node name="Platform2" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.8001, 0, 38.3027)
+ease_type = 2
+trans_type = 3
 
 [node name="Platform3" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.6639, 0, 33.63)
+ease_type = 2
+trans_type = 3
 
 [node name="Platform4" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.8537, 0, 36.7575)
+ease_type = 2
+trans_type = 3
 
 [node name="Platform5" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.4378, 0, 31.4226)
+ease_type = 2
+trans_type = 3
 
 [node name="Platform6" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.2112, 0, 33.2891)
+ease_type = 2
+trans_type = 3
 
 [node name="Platform7" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.0139, 0, 29.8803)
+destination_pos = Vector3(0, 0, -5)
+time = 2.0
+wait_time = 1.0
+ease_type = 2
+trans_type = 0
+
+[node name="Platform8" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.6131, 0, 29.8803)
+destination_pos = Vector3(-2, 0, 0)
+time = 2.0
+ease_type = 2
+trans_type = 0
+
+[node name="Platform9" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.01, 0, 27.0611)
+rot_speed = Vector3(0, 0, 0.1)
+ease_type = 2
+trans_type = 3
+
+[node name="Platform10" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.2275, 0, 27.0611)
+destination_pos = Vector3(0, 5, 0)
+time = 2.0
+ease_type = 2
+trans_type = 0
+
+[node name="Platform11" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.2754, 0, 22.9635)
+destination_pos = Vector3(0, -2, -2)
+time = 3.0
+rot_speed = Vector3(0, 0.2, 0)
+ease_type = 2
+trans_type = 0
+
+[node name="Platform12" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.0239, 0, 21.8645)
+destination_pos = Vector3(-1, 2, -7)
+time = 5.0
+rot_speed = Vector3(0.3, 0, 0)
+ease_type = 2
+trans_type = 0
+
+[node name="Platform13" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.2431, 0, 19.9265)
+rot_speed = Vector3(0, -0.2, 0)
+ease_type = 2
+trans_type = 3
+
+[node name="Platform14" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.5291, 0, 15.2287)
+rot_speed = Vector3(0, 0, 0.5)
+ease_type = 2
+trans_type = 3
+
+[node name="Platform15" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.3585, 0, 14.8064)
+destination_pos = Vector3(-4, 0, 2)
+time = 1.0
+rot_speed = Vector3(0, 1, 0)
+ease_type = 2
+trans_type = 3
+
+[node name="Platform16" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.9393, 0, 11.7095)
+ease_type = 2
+trans_type = 3
+
+[node name="Platform17" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.1877, 0, 11.3327)
+destination_pos = Vector3(1.5, 0, -4)
+time = 1.0
+rot_speed = Vector3(0, 0, 0.3)
+ease_type = 2
+trans_type = 0
+
+[node name="Platform18" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.3925, 0, 10.8136)
+destination_pos = Vector3(2, 0, -3)
+time = 1.5
+rot_speed = Vector3(0.3, 0, 0)
+ease_type = 2
+trans_type = 0
+
+[node name="Platform19" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.3925, 0, 7.47427)
+destination_pos = Vector3(0, 3, 0)
+time = 2.0
+ease_type = 2
+trans_type = 0
+
+[node name="Platform20" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5003, 0, 4.07006)
+destination_pos = Vector3(-4, 0, 0)
+time = 5.0
+ease_type = 2
+trans_type = 0
+
+[node name="Platform21" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.9587, 0, 1.85081)
+rot_speed = Vector3(0, 1, 0)
+ease_type = 2
+trans_type = 3
+
+[node name="Platform22" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.0314, 0, -1.73304)
+destination_pos = Vector3(0, 1, 0)
+time = 1.2
+ease_type = 2
+trans_type = 0
+
+[node name="Platform23" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.7955, 0, 1.23591)
+destination_pos = Vector3(0, -1, 0)
+time = 1.3
+ease_type = 2
+trans_type = 0
+
+[node name="Platform24" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.7136, 0, -1.74487)
+destination_pos = Vector3(-5, 0, 0)
+time = 1.0
+ease_type = 2
+trans_type = 3
+
+[node name="Platform25" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.3988, 0, 0.421432)
+destination_pos = Vector3(-3, 0, 0)
+time = 1.0
+ease_type = 2
+trans_type = 0
 
 [node name="World Boundary" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.53568, 0)
@@ -149,8 +476,20 @@ collision_mask = 2
 [node name="Collision" type="CollisionShape3D" parent="World Boundary"]
 shape = SubResource("WorldBoundaryShape3D_fwxkx")
 
-[node name="Checkpoint" parent="." instance=ExtResource("6_qmv3x")]
+[node name="Checkpoints" type="Node3D" parent="."]
+
+[node name="Checkpoint" parent="Checkpoints" instance=ExtResource("6_qmv3x")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 51.2225, 1, -51.877)
 
+[node name="Checkpoint2" parent="Checkpoints" instance=ExtResource("6_qmv3x")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.4, 1, -86)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_buohc")
+}
+autoplay = "sky_rotation"
+
 [connection signal="shooting" from="Player" to="." method="_on_player_shooting"]
+[connection signal="timeout" from="Platforms/Platform7/Wait Timer" to="Platforms/Platform7" method="_on_wait_timer_timeout"]
 [connection signal="body_entered" from="World Boundary" to="." method="_on_world_boundary_body_entered"]
