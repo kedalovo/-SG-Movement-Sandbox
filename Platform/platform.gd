@@ -4,8 +4,6 @@ extends Node3D
 
 @onready var pivot: Node3D = $Pivot
 @onready var body: AnimatableBody3D = $Body
-@onready var mesh: CSGBox3D = $Body/Shape/Mesh
-@onready var shape: CollisionShape3D = $Body/Shape
 
 @onready var destination: Node3D = $Destination
 @onready var wait_timer: Timer = $"Wait Timer"
@@ -24,12 +22,12 @@ var _wait_time: float = 0.0
 		_size = v
 		size = v
 		if Engine.is_editor_hint():
-			body = $Body
-			for s in body.get_children():
-				s.shape = BoxShape3D.new()
-				s.shape.size = v
-				var m: CSGBox3D = s.get_child(0)
-				m.size = v
+			for s in $Body.get_children():
+				if s is CollisionShape3D:
+					s.shape = BoxShape3D.new()
+					s.shape.size = v
+					var m: CSGBox3D = s.get_child(0)
+					m.size = v
 
 @export var destination_pos: Vector3 = Vector3.ZERO:
 	get:
@@ -71,10 +69,11 @@ var is_going_to: bool = true
 func _ready() -> void:
 	set_physics_process(false)
 	for s in body.get_children():
-		s.shape = BoxShape3D.new()
-		s.shape.size = size
-		var m: CSGBox3D = s.get_child(0)
-		m.size = size
+		if s is CollisionShape3D:
+			s.shape = BoxShape3D.new()
+			s.shape.size = size
+			var m: CSGBox3D = s.get_child(0)
+			m.size = size
 	if !Engine.is_editor_hint():
 		if rot_speed != Vector3.ZERO:
 			set_physics_process(true)

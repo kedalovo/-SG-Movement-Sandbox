@@ -10,6 +10,7 @@ extends Node3D
 var _field_size: Vector3 = Vector3(1.0, 1.0, 1.0)
 var _gravity_type: enums.gravity_field_types = enums.gravity_field_types.ZERO
 var _gravity_direction: Vector3 = Vector3(0.0, -1.0, 0.0)
+var _is_glowing: bool = false
 
 @export var field_size: Vector3 = Vector3(1.0, 1.0, 1.0):
 	get:
@@ -49,7 +50,25 @@ var _gravity_direction: Vector3 = Vector3(0.0, -1.0, 0.0)
 		gravity_direction = v
 		if Engine.is_editor_hint():
 			area.gravity_direction = v
-		
+
+@export var is_glowing: bool = false:
+	get:
+		return _is_glowing
+	set(v):
+		_is_glowing = v
+		is_glowing = v
+		$Particles.mesh = SphereMesh.new()
+		$Particles.mesh.radius = 0.08
+		$Particles.mesh.height = 0.16
+		$Particles.mesh.radial_segments = 8
+		$Particles.mesh.rings = 4
+		$Particles.mesh.material = StandardMaterial3D.new()
+		$Particles.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
+		$Particles.mesh.material.vertex_color_use_as_albedo = true
+		$Particles.mesh.material.albedo_color = Color("ffa100")
+		$Particles.mesh.material.emission_enabled = v
+		$Particles.mesh.material.emission = Color("ffa100")
+		$Particles.mesh.material.emission_energy_multiplier = 100.0
 
 const MAX_SIZE: Vector3 = Vector3(100, 100, 100)
 const MIN_SIZE: Vector3 = Vector3(1, 1, 1)
@@ -57,6 +76,18 @@ const MIN_SIZE: Vector3 = Vector3(1, 1, 1)
 
 func _ready() -> void:
 	collision.shape = BoxShape3D.new()
+	particles.mesh = SphereMesh.new()
+	particles.mesh.radius = 0.08
+	particles.mesh.height = 0.16
+	particles.mesh.radial_segments = 8
+	particles.mesh.rings = 4
+	particles.mesh.material = StandardMaterial3D.new()
+	particles.mesh.material.transparency = BaseMaterial3D.Transparency.TRANSPARENCY_ALPHA
+	particles.mesh.material.vertex_color_use_as_albedo = true
+	particles.mesh.material.albedo_color = Color("ffa100")
+	particles.mesh.material.emission_enabled = is_glowing
+	particles.mesh.material.emission = Color("ffa100")
+	particles.mesh.material.emission_energy_multiplier = 100.0
 	if !Engine.is_editor_hint():
 		# Setting the gravity fields size and particles
 		collision.shape.size = field_size

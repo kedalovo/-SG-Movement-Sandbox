@@ -2,20 +2,20 @@
 
 [ext_resource type="Script" uid="uid://bv7dmxyjd1djj" path="res://Platform/platform.gd" id="1_0v4dy"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0v4dy"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_oomkl"]
 shading_mode = 0
 albedo_color = Color(1, 0, 0, 1)
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_0v4dy"]
+[sub_resource type="CylinderMesh" id="CylinderMesh_buohc"]
 bottom_radius = 0.001
 height = 1.5
 radial_segments = 8
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g263t"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kul4i"]
 shading_mode = 0
 albedo_color = Color(0, 1, 0.0390625, 1)
 
-[sub_resource type="Animation" id="Animation_0fui7"]
+[sub_resource type="Animation" id="Animation_7gi1t"]
 length = 0.001
 tracks/0/type = "bezier"
 tracks/0/imported = false
@@ -29,7 +29,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0)
 }
 
-[sub_resource type="Animation" id="Animation_4o3py"]
+[sub_resource type="Animation" id="Animation_fsxsm"]
 resource_name = "bob"
 length = 4.0
 loop_mode = 1
@@ -46,10 +46,10 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 2, 4)
 }
 
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_b1qim"]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_glinl"]
 _data = {
-&"RESET": SubResource("Animation_0fui7"),
-&"bob": SubResource("Animation_4o3py")
+&"RESET": SubResource("Animation_7gi1t"),
+&"bob": SubResource("Animation_fsxsm")
 }
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_0v4dy"]
@@ -57,24 +57,22 @@ _data = {
 [node name="Platform" type="Node3D"]
 script = ExtResource("1_0v4dy")
 time = 0.0
-ease_type = null
-trans_type = null
 
 [node name="Destination" type="Node3D" parent="."]
 
 [node name="CSGCylinder3D" type="CSGCylinder3D" parent="Destination"]
 radius = 0.3
 height = 0.2
-material = SubResource("StandardMaterial3D_0v4dy")
+material = SubResource("StandardMaterial3D_oomkl")
 
 [node name="CSGMesh3D" type="CSGMesh3D" parent="Destination"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-mesh = SubResource("CylinderMesh_0v4dy")
-material = SubResource("StandardMaterial3D_g263t")
+mesh = SubResource("CylinderMesh_buohc")
+material = SubResource("StandardMaterial3D_kul4i")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Destination"]
 libraries = {
-&"": SubResource("AnimationLibrary_b1qim")
+&"": SubResource("AnimationLibrary_glinl")
 }
 autoplay = "bob"
 

@@ -6,11 +6,10 @@
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uoc06"]
 transparency = 1
-disable_fog = true
 vertex_color_use_as_albedo = true
-emission_enabled = true
-emission = Color(1, 0.632813, 0, 1)
-emission_energy_multiplier = 100.0
+albedo_color = Color(1, 0.631373, 0, 1)
+emission = Color(1, 0.631373, 0, 1)
+emission_energy_multiplier = 10.0
 
 [sub_resource type="SphereMesh" id="SphereMesh_geodj"]
 lightmap_size_hint = Vector2i(2, 2)
@@ -22,13 +21,13 @@ rings = 4
 
 [sub_resource type="Gradient" id="Gradient_pmoko"]
 offsets = PackedFloat32Array(0, 0.3, 0.7, 1)
-colors = PackedColorArray(1, 0.631373, 0, 0, 1, 0.632813, 0, 1, 1, 0.632813, 0, 1, 1, 0.631373, 0, 0)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
 metadata/_snap_enabled = true
 
 [sub_resource type="FogMaterial" id="FogMaterial_uoc06"]
 density = 0.1
-albedo = Color(1, 0.632813, 0, 1)
-emission = Color(0.222656, 0.1409, 0, 1)
+albedo = Color(0.46875, 0.296631, 0, 1)
+emission = Color(0.179688, 0.113709, 0, 1)
 edge_fade = 0.001
 
 [node name="Gravity Field" type="Node3D"]
@@ -45,8 +44,6 @@ shape = SubResource("BoxShape3D_uoc06")
 [node name="Particles" type="CPUParticles3D" parent="."]
 amount = 30
 lifetime = 10.0
-preprocess = 100.0
-fixed_fps = 30
 mesh = SubResource("SphereMesh_geodj")
 emission_shape = 3
 emission_box_extents = Vector3(0.5, 0.5, 0.5)
@@ -55,7 +52,6 @@ spread = 180.0
 gravity = Vector3(0, 0, 0)
 initial_velocity_min = 0.1
 initial_velocity_max = 0.2
-color = Color(1, 0.632813, 0, 1)
 color_ramp = SubResource("Gradient_pmoko")
 
 [node name="Fog" type="FogVolume" parent="."]
