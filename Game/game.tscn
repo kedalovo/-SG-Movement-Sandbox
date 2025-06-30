@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://bypwv3voslknq"]
+[gd_scene load_steps=50 format=3 uid="uid://bypwv3voslknq"]
 
 [ext_resource type="Script" uid="uid://cxc4k15g4v7se" path="res://Game/game.gd" id="1_bk3v5"]
 [ext_resource type="Texture2D" uid="uid://cxuxd1ybqe1mw" path="res://Resources/Skybox/Skybox.png" id="2_7raqb"]
@@ -23,6 +23,7 @@ fog_light_energy = 0.0
 fog_sky_affect = 0.0
 volumetric_fog_enabled = true
 volumetric_fog_density = 0.0
+volumetric_fog_ambient_inject = 1.0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4oc8p"]
 size = Vector3(50, 1, 50)
@@ -172,6 +173,65 @@ size = Vector3(1, 30, 12)
 [sub_resource type="BoxShape3D" id="BoxShape3D_4lqr4"]
 size = Vector3(1, 30, 12)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qlwvw"]
+shading_mode = 0
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_rpdke"]
+bottom_radius = 0.001
+height = 1.5
+radial_segments = 8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_33n3b"]
+shading_mode = 0
+albedo_color = Color(0, 1, 0.0390625, 1)
+
+[sub_resource type="Animation" id="Animation_rxmp4"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CSGMesh3D:position:y")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="Animation" id="Animation_qyr8x"]
+resource_name = "bob"
+length = 4.0
+loop_mode = 1
+step = 0.1
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CSGMesh3D:position:y")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0),
+"points": PackedFloat32Array(1, 0, 0, 1, 0, 2, -1, 0, 1, 0, 1, -1, 0, 0, 0),
+"times": PackedFloat32Array(0, 2, 4)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ss60k"]
+_data = {
+&"RESET": SubResource("Animation_rxmp4"),
+&"bob": SubResource("Animation_qyr8x")
+}
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qlwvw"]
+size = Vector3(1, 3, 5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rpdke"]
+size = Vector3(1, 30, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_33n3b"]
+size = Vector3(1, 3, 30)
+
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_fwxkx"]
 
 [sub_resource type="Animation" id="Animation_oomkl"]
@@ -218,6 +278,7 @@ script = ExtResource("1_bk3v5")
 amount_of_cans = 100
 amount_of_balls = 100
 amount_of_cubes = 100
+amount_of_junk_in_zero_gravity = 300
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_1r4le")
@@ -253,8 +314,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.53023, -14.4393)
 field_size = Vector3(2, 2, 10)
 
 [node name="Player" parent="." instance=ExtResource("4_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.4367, 3, -86.1023)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -180.163, 3, -86.1023)
 air_control = 0.7
+mouse_sensitivity = 0.12
 
 [node name="Platforms" type="Node3D" parent="."]
 
@@ -281,6 +343,134 @@ size = Vector3(5, 0.1, 3)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, 0, -38)
 size = Vector3(20, 1, 20)
 rot_speed = Vector3(0, 0.5, 0)
+
+[node name="Jumping Cubes 1" type="Node3D" parent="Platforms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 71.8864, 0, -85.5023)
+
+[node name="Platform" parent="Platforms/Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 0, 34)
+
+[node name="Platform2" parent="Platforms/Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.8001, 0, 38.3027)
+
+[node name="Platform3" parent="Platforms/Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.6639, 0, 33.63)
+
+[node name="Platform4" parent="Platforms/Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.8537, 0, 36.7575)
+
+[node name="Platform5" parent="Platforms/Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.4378, 0, 31.4226)
+
+[node name="Platform6" parent="Platforms/Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.2112, 0, 33.2891)
+
+[node name="Platform7" parent="Platforms/Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.0139, 0, 29.8803)
+destination_pos = Vector3(0, 0, -5)
+time = 2.0
+wait_time = 1.0
+trans_type = 0
+
+[node name="Platform8" parent="Platforms/Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.6131, 0, 29.8803)
+destination_pos = Vector3(-2, 0, 0)
+time = 2.0
+trans_type = 0
+
+[node name="Platform9" parent="Platforms/Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.01, 0, 27.0611)
+rot_speed = Vector3(0, 0, 0.1)
+
+[node name="Platform10" parent="Platforms/Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.2275, 0, 27.0611)
+destination_pos = Vector3(0, 5, 0)
+time = 2.0
+trans_type = 0
+
+[node name="Platform11" parent="Platforms/Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.2754, 0, 22.9635)
+destination_pos = Vector3(0, -2, -2)
+time = 3.0
+rot_speed = Vector3(0, 0.2, 0)
+trans_type = 0
+
+[node name="Platform12" parent="Platforms/Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.0239, 0, 21.8645)
+destination_pos = Vector3(-1, 2, -7)
+time = 5.0
+rot_speed = Vector3(0.3, 0, 0)
+trans_type = 0
+
+[node name="Platform13" parent="Platforms/Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.2431, 0, 19.9265)
+rot_speed = Vector3(0, -0.2, 0)
+
+[node name="Platform14" parent="Platforms/Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.5291, 0, 15.2287)
+rot_speed = Vector3(0, 0, 0.5)
+
+[node name="Platform15" parent="Platforms/Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.3585, 0, 14.8064)
+destination_pos = Vector3(-4, 0, 2)
+time = 1.0
+rot_speed = Vector3(0, 1, 0)
+
+[node name="Platform16" parent="Platforms/Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.9393, 0, 11.7095)
+
+[node name="Platform17" parent="Platforms/Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.1877, 0, 11.3327)
+destination_pos = Vector3(1.5, 0, -4)
+time = 1.0
+rot_speed = Vector3(0, 0, 0.3)
+trans_type = 0
+
+[node name="Platform18" parent="Platforms/Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.3925, 0, 10.8136)
+destination_pos = Vector3(2, 0, -3)
+time = 1.5
+rot_speed = Vector3(0.3, 0, 0)
+trans_type = 0
+
+[node name="Platform19" parent="Platforms/Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.3925, 0, 7.47427)
+destination_pos = Vector3(0, 3, 0)
+time = 2.0
+trans_type = 0
+
+[node name="Platform20" parent="Platforms/Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5003, 0, 4.07006)
+destination_pos = Vector3(-4, 0, 0)
+time = 5.0
+trans_type = 0
+
+[node name="Platform21" parent="Platforms/Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.9587, 0, 1.85081)
+rot_speed = Vector3(0, 1, 0)
+
+[node name="Platform22" parent="Platforms/Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.0314, 0, -1.73304)
+destination_pos = Vector3(0, 1, 0)
+time = 1.2
+trans_type = 0
+
+[node name="Platform23" parent="Platforms/Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.7955, 0, 1.23591)
+destination_pos = Vector3(0, -1, 0)
+time = 1.3
+trans_type = 0
+
+[node name="Platform24" parent="Platforms/Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.7136, 0, -1.74487)
+destination_pos = Vector3(-5, 0, 0)
+time = 1.0
+
+[node name="Platform25" parent="Platforms/Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.3988, 0, 0.421432)
+destination_pos = Vector3(-3, 0, 0)
+time = 1.0
+trans_type = 0
 
 [node name="Platform6" parent="Platforms" instance=ExtResource("5_fwxkx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.41, 0, -85.9089)
@@ -347,33 +537,10 @@ shape = SubResource("BoxShape3D_7gi1t")
 [node name="Mesh" type="CSGBox3D" parent="Platforms/Platform7/Body/Shape4"]
 size = Vector3(80, 1, 30)
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Platforms/Platform7/Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.4775, 11.1967, -11.5254)
-light_color = Color(0, 0.0859375, 1, 1)
-light_energy = 10.0
-light_volumetric_fog_energy = 100.0
-omni_attenuation = 0.1
-
-[node name="OmniLight3D2" type="OmniLight3D" parent="Platforms/Platform7/Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.07387, 2.637, -0.0538635)
-light_color = Color(1, 0, 0, 1)
-light_energy = 10.0
-light_volumetric_fog_energy = 100.0
-omni_attenuation = 0.1
-
-[node name="OmniLight3D3" type="OmniLight3D" parent="Platforms/Platform7/Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.363091, -10.8105, 5.56091)
-light_color = Color(0.078125, 1, 0, 1)
-light_energy = 10.0
-light_volumetric_fog_energy = 100.0
-omni_attenuation = 0.1
-
-[node name="OmniLight3D4" type="OmniLight3D" parent="Platforms/Platform7/Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.3784, -6.79981, 10.5925)
-light_color = Color(0.945313, 1, 0, 1)
-light_energy = 10.0
-light_volumetric_fog_energy = 100.0
-omni_attenuation = 0.1
+[node name="RemoteTransform3D" type="RemoteTransform3D" parent="Platforms/Platform7/Body"]
+remote_path = NodePath("../../../Zero Gravity")
+update_position = false
+update_scale = false
 
 [node name="Pivot" type="Node3D" parent="Platforms/Platform7"]
 
@@ -391,6 +558,7 @@ script = ExtResource("6_oomkl")
 size = Vector3(1, 30, 12)
 time = 0.0
 rot_speed = Vector3(0.2, 0, 0)
+metadata/_edit_group_ = true
 
 [node name="Destination" type="Node3D" parent="Platforms/Platform9"]
 
@@ -447,133 +615,437 @@ size = Vector3(1, 30, 12)
 
 [node name="Pivot" type="Node3D" parent="Platforms/Platform9"]
 
-[node name="Jumping Cubes 1" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 71.8864, 0, -85.5023)
+[node name="Zero Gravity" type="Node3D" parent="Platforms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.549, 15.2242, -85.9089)
 
-[node name="Platform" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 0, 34)
+[node name="Platform10" type="Node3D" parent="Platforms/Zero Gravity"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.549, 0.272374, -11.9757)
+script = ExtResource("6_oomkl")
+size = Vector3(1, 3, 5)
+destination_pos = Vector3(0, 0, 24)
+time = 3.0
+metadata/_edit_group_ = true
 
-[node name="Platform2" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.8001, 0, 38.3027)
+[node name="Destination" type="Node3D" parent="Platforms/Zero Gravity/Platform10"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 24)
 
-[node name="Platform3" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.6639, 0, 33.63)
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="Platforms/Zero Gravity/Platform10/Destination"]
+radius = 0.3
+height = 0.2
+material = SubResource("StandardMaterial3D_qlwvw")
 
-[node name="Platform4" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.8537, 0, 36.7575)
+[node name="CSGMesh3D" type="CSGMesh3D" parent="Platforms/Zero Gravity/Platform10/Destination"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CylinderMesh_rpdke")
+material = SubResource("StandardMaterial3D_33n3b")
 
-[node name="Platform5" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.4378, 0, 31.4226)
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Platforms/Zero Gravity/Platform10/Destination"]
+libraries = {
+&"": SubResource("AnimationLibrary_ss60k")
+}
+autoplay = "bob"
 
-[node name="Platform6" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.2112, 0, 33.2891)
+[node name="Wait Timer" type="Timer" parent="Platforms/Zero Gravity/Platform10"]
+one_shot = true
 
-[node name="Platform7" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.0139, 0, 29.8803)
-destination_pos = Vector3(0, 0, -5)
+[node name="Body" type="AnimatableBody3D" parent="Platforms/Zero Gravity/Platform10"]
+collision_mask = 22
+sync_to_physics = false
+
+[node name="Shape" type="CollisionShape3D" parent="Platforms/Zero Gravity/Platform10/Body"]
+shape = SubResource("BoxShape3D_qlwvw")
+
+[node name="Mesh" type="CSGBox3D" parent="Platforms/Zero Gravity/Platform10/Body/Shape"]
+size = Vector3(1, 3, 5)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Platforms/Zero Gravity/Platform10/Body/Shape"]
+light_color = Color(1, 0, 0, 1)
+light_energy = 5.0
+light_volumetric_fog_energy = 5.0
+omni_range = 10.0
+
+[node name="Pivot" type="Node3D" parent="Platforms/Zero Gravity/Platform10"]
+
+[node name="Platform11" type="Node3D" parent="Platforms/Zero Gravity"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.51847, 0.111043, 13.5089)
+script = ExtResource("6_oomkl")
+size = Vector3(1, 30, 2)
+destination_pos = Vector3(0, 0, -27)
+time = 5.0
+metadata/_edit_group_ = true
+
+[node name="Destination" type="Node3D" parent="Platforms/Zero Gravity/Platform11"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -27)
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="Platforms/Zero Gravity/Platform11/Destination"]
+radius = 0.3
+height = 0.2
+material = SubResource("StandardMaterial3D_qlwvw")
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="Platforms/Zero Gravity/Platform11/Destination"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CylinderMesh_rpdke")
+material = SubResource("StandardMaterial3D_33n3b")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Platforms/Zero Gravity/Platform11/Destination"]
+libraries = {
+&"": SubResource("AnimationLibrary_ss60k")
+}
+autoplay = "bob"
+
+[node name="Wait Timer" type="Timer" parent="Platforms/Zero Gravity/Platform11"]
+one_shot = true
+
+[node name="Body" type="AnimatableBody3D" parent="Platforms/Zero Gravity/Platform11"]
+collision_mask = 22
+sync_to_physics = false
+
+[node name="Shape" type="CollisionShape3D" parent="Platforms/Zero Gravity/Platform11/Body"]
+shape = SubResource("BoxShape3D_rpdke")
+
+[node name="Mesh" type="CSGBox3D" parent="Platforms/Zero Gravity/Platform11/Body/Shape"]
+size = Vector3(1, 30, 2)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Platforms/Zero Gravity/Platform11/Body/Shape"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 13.3, 0)
+light_color = Color(1, 0.984375, 0, 1)
+light_energy = 5.0
+light_volumetric_fog_energy = 5.0
+omni_range = 10.0
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="Platforms/Zero Gravity/Platform11/Body/Shape"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.299999, 0)
+light_color = Color(1, 0.984375, 0, 1)
+light_energy = 5.0
+light_volumetric_fog_energy = 5.0
+omni_range = 10.0
+
+[node name="OmniLight3D3" type="OmniLight3D" parent="Platforms/Zero Gravity/Platform11/Body/Shape"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -13.7, 0)
+light_color = Color(1, 0.984375, 0, 1)
+light_energy = 5.0
+light_volumetric_fog_energy = 5.0
+omni_range = 10.0
+
+[node name="Pivot" type="Node3D" parent="Platforms/Zero Gravity/Platform11"]
+
+[node name="Platform12" type="Node3D" parent="Platforms/Zero Gravity"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.549, -13.2242, 0.0591278)
+script = ExtResource("6_oomkl")
+size = Vector3(1, 3, 30)
+destination_pos = Vector3(0, 27, 0)
+time = 3.0
+metadata/_edit_group_ = true
+
+[node name="Destination" type="Node3D" parent="Platforms/Zero Gravity/Platform12"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 27, 0)
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="Platforms/Zero Gravity/Platform12/Destination"]
+radius = 0.3
+height = 0.2
+material = SubResource("StandardMaterial3D_qlwvw")
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="Platforms/Zero Gravity/Platform12/Destination"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CylinderMesh_rpdke")
+material = SubResource("StandardMaterial3D_33n3b")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Platforms/Zero Gravity/Platform12/Destination"]
+libraries = {
+&"": SubResource("AnimationLibrary_ss60k")
+}
+autoplay = "bob"
+
+[node name="Wait Timer" type="Timer" parent="Platforms/Zero Gravity/Platform12"]
+one_shot = true
+
+[node name="Body" type="AnimatableBody3D" parent="Platforms/Zero Gravity/Platform12"]
+collision_mask = 22
+sync_to_physics = false
+
+[node name="Shape" type="CollisionShape3D" parent="Platforms/Zero Gravity/Platform12/Body"]
+shape = SubResource("BoxShape3D_33n3b")
+
+[node name="Mesh" type="CSGBox3D" parent="Platforms/Zero Gravity/Platform12/Body/Shape"]
+size = Vector3(1, 3, 30)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Platforms/Zero Gravity/Platform12/Body/Shape"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 12.9)
+light_color = Color(0, 0.929688, 1, 1)
+light_energy = 5.0
+light_volumetric_fog_energy = 5.0
+omni_range = 10.0
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="Platforms/Zero Gravity/Platform12/Body/Shape"]
+light_color = Color(0, 0.929688, 1, 1)
+light_energy = 5.0
+light_volumetric_fog_energy = 5.0
+omni_range = 10.0
+
+[node name="OmniLight3D3" type="OmniLight3D" parent="Platforms/Zero Gravity/Platform12/Body/Shape"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -13)
+light_color = Color(0, 0.929688, 1, 1)
+light_energy = 5.0
+light_volumetric_fog_energy = 5.0
+omni_range = 10.0
+
+[node name="Pivot" type="Node3D" parent="Platforms/Zero Gravity/Platform12"]
+
+[node name="Platform10" parent="Platforms" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -122.354, 0, -88.1036)
+size = Vector3(100, 1, 2)
+
+[node name="Platform11" parent="Platforms" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -122.354, 0, -84.1036)
+size = Vector3(100, 1, 2)
+
+[node name="Platform12" parent="Platforms" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -180.204, 0, -86)
+size = Vector3(10, 1, 10)
+
+[node name="Two Roads" type="Node3D" parent="Platforms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -122.5, 0, -86)
+
+[node name="Platform" parent="Platforms/Two Roads" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.3503, 2, -2.1)
+size = Vector3(3, 3, 2)
+destination_pos = Vector3(97, 0, 0)
+time = 5.0
+trans_type = 0
+
+[node name="Platform2" parent="Platforms/Two Roads" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.3503, 2, 1.9)
+size = Vector3(3, 3, 2)
+destination_pos = Vector3(97, 0, 0)
+time = 7.0
+trans_type = 0
+
+[node name="Platform3" parent="Platforms/Two Roads" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41, 2, 0)
+size = Vector3(5, 3, 1)
+rot_speed = Vector3(0, 0.8, 0)
+
+[node name="Platform4" parent="Platforms/Two Roads" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29, 2, 0)
+size = Vector3(5, 3, 1)
+rot_speed = Vector3(0, -0.7, 0)
+
+[node name="Platform5" parent="Platforms/Two Roads" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 2, -6)
+size = Vector3(3, 3, 3)
+destination_pos = Vector3(0, 0, 12)
+time = 3.0
+trans_type = 0
+
+[node name="Platform6" parent="Platforms/Two Roads" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 2, 6)
+size = Vector3(3, 3, 3)
+destination_pos = Vector3(0, 0, -12)
+time = 3.0
+trans_type = 0
+
+[node name="Platform7" parent="Platforms/Two Roads" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 2, -6)
+size = Vector3(3, 3, 3)
+destination_pos = Vector3(0, 0, 12)
+time = 2.0
+trans_type = 0
+
+[node name="Platform8" parent="Platforms/Two Roads" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19, 2, 6)
+size = Vector3(3, 3, 3)
+destination_pos = Vector3(0, 0, -12)
+time = 2.0
+trans_type = 0
+
+[node name="Platform9" parent="Platforms/Two Roads" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31, 2, -6)
+size = Vector3(3, 3, 3)
+destination_pos = Vector3(0, 0, 12)
+time = 1.0
+trans_type = 0
+
+[node name="Platform10" parent="Platforms/Two Roads" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -41, 2, 6)
+size = Vector3(3, 3, 3)
+destination_pos = Vector3(0, 0, -12)
+time = 1.0
+trans_type = 0
+
+[node name="Platform11" parent="Platforms/Two Roads" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(0.707107, -0.353553, -0.612372, 0, 0.866025, -0.5, 0.707107, 0.353553, 0.612372, 34, 12.7888, 11)
+size = Vector3(1, 1, 30)
+
+[node name="Platform12" parent="Platforms/Two Roads" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(-0.965926, -0.12941, -0.224144, -0.129409, 0.991481, -0.0147546, 0.224144, 0.0147546, -0.974444, 34, 12.7888, 0)
+size = Vector3(1, 1, 30)
+
+[node name="Platform13" parent="Platforms/Two Roads" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(-0.25, 0.242362, 0.937422, -0.0669873, 0.961516, -0.266456, -0.965926, -0.12941, -0.224144, 28, 12.7888, 0)
+size = Vector3(1, 1, 30)
+
+[node name="Platform14" parent="Platforms/Two Roads" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(0.290558, 0.0937936, 0.952249, -0.19191, 0.980675, -0.0380365, -0.937415, -0.171694, 0.302943, 12, 13.7888, -1)
+size = Vector3(3, 1, 30)
+
+[node name="Platform15" parent="Platforms/Two Roads" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(-0.224296, -0.38741, 0.894206, -0.972457, 0.0292907, -0.231234, 0.0633902, -0.921442, -0.383309, -7, 16.7888, 2)
+size = Vector3(3, 1, 30)
+
+[node name="Platform16" parent="Platforms/Two Roads" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(-0.224296, -0.38741, 0.894206, -0.972457, 0.0292907, -0.231234, 0.0633902, -0.921442, -0.383309, -7, 16.7888, 2)
+size = Vector3(3, 1, 30)
+
+[node name="Platform17" parent="Platforms/Two Roads" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(-0.0572504, -0.991697, 0.115148, -0.880843, -0.00411522, -0.473389, 0.469933, -0.128529, -0.873294, -15, 16.7888, -1)
+size = Vector3(3, 1, 30)
+
+[node name="Platform18" parent="Platforms/Two Roads" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(0.196162, -0.368908, -0.90853, -0.964477, 0.0945883, -0.246648, 0.176927, 0.92464, -0.337249, -26, 16.7888, -1)
+size = Vector3(3, 1, 30)
+
+[node name="Platform19" parent="Platforms/Two Roads" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(-0.25377, 0.387609, -0.886205, -0.967169, -0.114565, 0.226846, -0.0136007, 0.914677, 0.403956, -40, 17.7888, -2)
+size = Vector3(3, 3, 30)
+
+[node name="Platform20" parent="Platforms/Two Roads" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(0.0533801, 0.916962, 0.395388, 0.00379378, -0.396136, 0.918184, 0.998567, -0.0475127, -0.0246247, -51, 22.7888, 1)
+size = Vector3(3, 3, 30)
+
+[node name="Jumping Cubes 2" type="Node3D" parent="Platforms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -187.903, 0, -85)
+
+[node name="Platform" parent="Platforms/Jumping Cubes 2" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.53532)
+destination_pos = Vector3(-10, 0, -5)
+time = 4.0
+wait_time = 1.0
+
+[node name="Platform2" parent="Platforms/Jumping Cubes 2" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.4447, 0, -2)
+destination_pos = Vector3(-3, 5, 3)
 time = 2.0
 wait_time = 1.0
-trans_type = 0
 
-[node name="Platform8" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.6131, 0, 29.8803)
-destination_pos = Vector3(-2, 0, 0)
-time = 2.0
-trans_type = 0
-
-[node name="Platform9" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.01, 0, 27.0611)
-rot_speed = Vector3(0, 0, 0.1)
-
-[node name="Platform10" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.2275, 0, 27.0611)
-destination_pos = Vector3(0, 5, 0)
-time = 2.0
-trans_type = 0
-
-[node name="Platform11" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.2754, 0, 22.9635)
-destination_pos = Vector3(0, -2, -2)
-time = 3.0
-rot_speed = Vector3(0, 0.2, 0)
-trans_type = 0
-
-[node name="Platform12" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.0239, 0, 21.8645)
-destination_pos = Vector3(-1, 2, -7)
-time = 5.0
+[node name="Platform3" parent="Platforms/Jumping Cubes 2" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.3221, 4.67815, 3)
 rot_speed = Vector3(0.3, 0, 0)
-trans_type = 0
 
-[node name="Platform13" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.2431, 0, 19.9265)
-rot_speed = Vector3(0, -0.2, 0)
+[node name="Platform4" parent="Platforms/Jumping Cubes 2" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.3221, 4.67815, 7)
+rot_speed = Vector3(-0.3, 0, 0)
 
-[node name="Platform14" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.5291, 0, 15.2287)
-rot_speed = Vector3(0, 0, 0.5)
-
-[node name="Platform15" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.3585, 0, 14.8064)
-destination_pos = Vector3(-4, 0, 2)
-time = 1.0
-rot_speed = Vector3(0, 1, 0)
-
-[node name="Platform16" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.9393, 0, 11.7095)
-
-[node name="Platform17" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.1877, 0, 11.3327)
-destination_pos = Vector3(1.5, 0, -4)
-time = 1.0
+[node name="Platform5" parent="Platforms/Jumping Cubes 2" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.3221, 4.67815, 11)
 rot_speed = Vector3(0, 0, 0.3)
+
+[node name="Platform6" parent="Platforms/Jumping Cubes 2" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.3221, 4.67815, 15)
+rot_speed = Vector3(0, 0, -0.3)
+
+[node name="Platform7" parent="Platforms/Jumping Cubes 2" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.3221, 4.67815, 20)
+rot_speed = Vector3(0.4, 0, 0)
+
+[node name="Platform8" parent="Platforms/Jumping Cubes 2" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.3221, 4.67815, 25)
+destination_pos = Vector3(-5, 3, 10)
+time = 7.0
+rot_speed = Vector3(-0.4, 0, 0)
+wait_time = 2.0
 trans_type = 0
 
-[node name="Platform18" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.3925, 0, 10.8136)
-destination_pos = Vector3(2, 0, -3)
-time = 1.5
-rot_speed = Vector3(0.3, 0, 0)
+[node name="Platform9" parent="Platforms/Jumping Cubes 2" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.6686, 8, 38.0395)
+size = Vector3(5, 1, 1)
+destination_pos = Vector3(0, 0, 10)
+time = 3.5
+rot_speed = Vector3(0, 0.5, 0)
+wait_time = 2.0
 trans_type = 0
 
-[node name="Platform19" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.3925, 0, 7.47427)
-destination_pos = Vector3(0, 3, 0)
+[node name="Platform10" parent="Platforms/Jumping Cubes 2" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17, 9, 50)
+size = Vector3(3, 1, 1)
+destination_pos = Vector3(0, 5, 5)
 time = 2.0
+rot_speed = Vector3(0.5, 0, 0)
 trans_type = 0
 
-[node name="Platform20" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5003, 0, 4.07006)
-destination_pos = Vector3(-4, 0, 0)
-time = 5.0
+[node name="Shulker Tower" type="Node3D" parent="Platforms"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -205, 16, -10)
+
+[node name="Platform" parent="Platforms/Shulker Tower" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 17, 10)
+size = Vector3(20, 50, 1)
+
+[node name="Platform2" parent="Platforms/Shulker Tower" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 27, -10)
+size = Vector3(20, 30, 1)
+
+[node name="Platform3" parent="Platforms/Shulker Tower" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 10, 17, 0)
+size = Vector3(20, 50, 1)
+
+[node name="Platform4" parent="Platforms/Shulker Tower" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -10, 17, 0)
+size = Vector3(20, 50, 1)
+
+[node name="Platform5" parent="Platforms/Shulker Tower" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, -11)
+
+[node name="Platform6" parent="Platforms/Shulker Tower" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, -8)
+
+[node name="Platform7" parent="Platforms/Shulker Tower" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 2, -6)
+size = Vector3(3, 1, 3)
+destination_pos = Vector3(10, 5, 5)
+time = 3.0
+
+[node name="Platform8" parent="Platforms/Shulker Tower" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 8, 2)
+size = Vector3(2, 1, 2)
+destination_pos = Vector3(-7, 3, -5)
+time = 2.0
+rot_speed = Vector3(0.2, 0, 0)
 trans_type = 0
 
-[node name="Platform21" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.9587, 0, 1.85081)
+[node name="Platform9" parent="Platforms/Shulker Tower" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12, 0)
+destination_pos = Vector3(-8, 10, 8)
+time = 1.0
 rot_speed = Vector3(0, 1, 0)
+wait_time = 3.0
 
-[node name="Platform22" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.0314, 0, -1.73304)
-destination_pos = Vector3(0, 1, 0)
-time = 1.2
-trans_type = 0
-
-[node name="Platform23" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.7955, 0, 1.23591)
-destination_pos = Vector3(0, -1, 0)
-time = 1.3
-trans_type = 0
-
-[node name="Platform24" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.7136, 0, -1.74487)
-destination_pos = Vector3(-5, 0, 0)
+[node name="Platform10" parent="Platforms/Shulker Tower" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 22, 4)
+size = Vector3(6, 1, 1)
+destination_pos = Vector3(10, 10, -10)
 time = 1.0
+rot_speed = Vector3(0, 0.5, 0)
+wait_time = 1.0
 
-[node name="Platform25" parent="Jumping Cubes 1" instance=ExtResource("5_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.3988, 0, 0.421432)
-destination_pos = Vector3(-3, 0, 0)
+[node name="Platform11" parent="Platforms/Shulker Tower" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 33, -4)
+destination_pos = Vector3(-14, 0, 13)
 time = 1.0
-trans_type = 0
+wait_time = 5.0
+
+[node name="Platform12" parent="Platforms/Shulker Tower" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 33, 9)
+destination_pos = Vector3(16, 8, -10)
+time = 10.0
+
+[node name="Platform13" parent="Platforms/Shulker Tower" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 37, 1)
+size = Vector3(1, 10, 1)
+rot_speed = Vector3(1, 0, 0)
+
+[node name="Platform14" parent="Platforms/Shulker Tower" instance=ExtResource("5_fwxkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 37, 5)
+size = Vector3(1, 10, 1)
+rot_speed = Vector3(-1, 0, 0)
 
 [node name="World Boundary" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.53568, 0)
@@ -594,6 +1066,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.4, 1, -86)
 [node name="Checkpoint3" parent="Checkpoints" instance=ExtResource("6_qmv3x")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -63.8215, 1, -86)
 
+[node name="Checkpoint4" parent="Checkpoints" instance=ExtResource("6_qmv3x")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -180.17, 1, -85.9745)
+
+[node name="Checkpoint5" parent="Checkpoints" instance=ExtResource("6_qmv3x")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -201, 17, -21)
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 &"": SubResource("AnimationLibrary_buohc")
@@ -603,4 +1081,7 @@ autoplay = "sky_rotation"
 [connection signal="shooting" from="Player" to="." method="_on_player_shooting"]
 [connection signal="timeout" from="Platforms/Platform7/Wait Timer" to="Platforms/Platform7" method="_on_wait_timer_timeout"]
 [connection signal="timeout" from="Platforms/Platform9/Wait Timer" to="Platforms/Platform9" method="_on_wait_timer_timeout"]
+[connection signal="timeout" from="Platforms/Zero Gravity/Platform10/Wait Timer" to="Platforms/Zero Gravity/Platform10" method="_on_wait_timer_timeout"]
+[connection signal="timeout" from="Platforms/Zero Gravity/Platform11/Wait Timer" to="Platforms/Zero Gravity/Platform11" method="_on_wait_timer_timeout"]
+[connection signal="timeout" from="Platforms/Zero Gravity/Platform12/Wait Timer" to="Platforms/Zero Gravity/Platform12" method="_on_wait_timer_timeout"]
 [connection signal="body_entered" from="World Boundary" to="." method="_on_world_boundary_body_entered"]

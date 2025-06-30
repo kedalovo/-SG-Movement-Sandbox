@@ -15,6 +15,8 @@ const PELLET = preload("res://Pellet/pellet.tscn")
 @export var amount_of_balls: int = 0
 @export var amount_of_cubes: int = 0
 
+@export var amount_of_junk_in_zero_gravity: int = 0
+
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -33,6 +35,13 @@ func _ready() -> void:
 		junk.add_child(cube)
 		cube.position.x = randf_range(-25.0, 25.0)
 		cube.position.z = randf_range(-25.0, 25.0)
+	for i in amount_of_junk_in_zero_gravity:
+		var new_junk: RigidBody3D = [CAN, BALL, CUBE].pick_random().instantiate()
+		var initial_pos: Vector3 = Vector3(-12.549, 15.224, -85.909)
+		junk.add_child(new_junk)
+		junk.global_position.x = initial_pos.x + randf_range(-30.0, 30.0)
+		junk.global_position.y = initial_pos.y + randf_range(-10.0, 10.0)
+		junk.global_position.z = initial_pos.z + randf_range(-10.0, 10.0)
 
 
 func _input(event: InputEvent) -> void:
@@ -58,3 +67,5 @@ func _on_player_shooting(pos: Vector3, direction: Vector3) -> void:
 func _on_world_boundary_body_entered(body: Node3D) -> void:
 	if body is Player:
 		player.reset()
+	elif body.get_parent() in get_tree().get_nodes_in_group(&"Junk"):
+		body.queue_free()

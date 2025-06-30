@@ -92,6 +92,8 @@ rotate_counter_clockwise={
 [physics]
 
 3d/physics_engine="Jolt Physics"
+jolt_physics_3d/limits/temporary_memory_buffer_size=64
+jolt_physics_3d/limits/max_contact_constraints=61440
 
 [rendering]
 

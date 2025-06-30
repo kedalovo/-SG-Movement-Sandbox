@@ -87,7 +87,7 @@ func _ready() -> void:
 		destination.hide()
 		if destination_pos != Vector3.ZERO:
 			var pos_tween := get_tree().create_tween()
-			pos_tween.tween_property(body, "global_position", destination.global_position, time).set_ease(ease_type).set_trans(trans_type)
+			pos_tween.tween_property(body, "position", destination.position, time).set_ease(ease_type).set_trans(trans_type)
 			if wait_time > 0.0:
 				pos_tween.finished.connect(func(): wait_timer.start(wait_time))
 			else:
@@ -104,7 +104,7 @@ func _on_wait_timer_timeout() -> void:
 	if is_going_to:
 		is_going_to = false
 		var pos_tween := get_tree().create_tween()
-		pos_tween.tween_property(body, "global_position", global_position, time).set_ease(ease_type).set_trans(trans_type)
+		pos_tween.tween_property(body, "position", Vector3.ZERO, time).set_ease(ease_type).set_trans(trans_type)
 		if wait_time > 0.0:
 			pos_tween.finished.connect(func(): wait_timer.start(wait_time))
 		else:
@@ -112,7 +112,7 @@ func _on_wait_timer_timeout() -> void:
 	else:
 		is_going_to = true
 		var pos_tween := get_tree().create_tween()
-		pos_tween.tween_property(body, "global_position", destination.global_position, time).set_ease(ease_type).set_trans(trans_type)
+		pos_tween.tween_property(body, "position", destination.position, time).set_ease(ease_type).set_trans(trans_type)
 		if wait_time > 0.0:
 			pos_tween.finished.connect(func(): wait_timer.start(wait_time))
 		else:

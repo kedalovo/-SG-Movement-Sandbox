@@ -15,6 +15,7 @@ signal shooting(pos: Vector3, direction: Vector3)
 @export var air_control: float = 0.5
 @export var air_friction: float = 0.1
 @export var gravity_control: float = 0.15
+@export var floor_friction: float = 2.0
 
 @export var zoom_limit: float = 5.0
 @export var zoom_force: float = 0.2
@@ -137,7 +138,7 @@ func _physics_process(delta: float) -> void:
 		else:
 			var new_velocity: Vector2 = Vector2(velocity.x, velocity.z)
 			if is_on_floor():
-				new_velocity = new_velocity.move_toward(Vector2.ZERO, delta * acceleration)
+				new_velocity = new_velocity.move_toward(Vector2.ZERO, delta * acceleration * floor_friction)
 			else:
 				new_velocity = new_velocity.move_toward(Vector2.ZERO, delta * acceleration * air_friction)
 			velocity.x = new_velocity.x

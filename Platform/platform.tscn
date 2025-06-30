@@ -2,20 +2,20 @@
 
 [ext_resource type="Script" uid="uid://bv7dmxyjd1djj" path="res://Platform/platform.gd" id="1_0v4dy"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_oomkl"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qlwvw"]
 shading_mode = 0
 albedo_color = Color(1, 0, 0, 1)
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_buohc"]
+[sub_resource type="CylinderMesh" id="CylinderMesh_rpdke"]
 bottom_radius = 0.001
 height = 1.5
 radial_segments = 8
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kul4i"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_33n3b"]
 shading_mode = 0
 albedo_color = Color(0, 1, 0.0390625, 1)
 
-[sub_resource type="Animation" id="Animation_7gi1t"]
+[sub_resource type="Animation" id="Animation_rxmp4"]
 length = 0.001
 tracks/0/type = "bezier"
 tracks/0/imported = false
@@ -29,7 +29,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0)
 }
 
-[sub_resource type="Animation" id="Animation_fsxsm"]
+[sub_resource type="Animation" id="Animation_qyr8x"]
 resource_name = "bob"
 length = 4.0
 loop_mode = 1
@@ -46,10 +46,10 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 2, 4)
 }
 
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_glinl"]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ss60k"]
 _data = {
-&"RESET": SubResource("Animation_7gi1t"),
-&"bob": SubResource("Animation_fsxsm")
+&"RESET": SubResource("Animation_rxmp4"),
+&"bob": SubResource("Animation_qyr8x")
 }
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_0v4dy"]
@@ -63,16 +63,16 @@ time = 0.0
 [node name="CSGCylinder3D" type="CSGCylinder3D" parent="Destination"]
 radius = 0.3
 height = 0.2
-material = SubResource("StandardMaterial3D_oomkl")
+material = SubResource("StandardMaterial3D_qlwvw")
 
 [node name="CSGMesh3D" type="CSGMesh3D" parent="Destination"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-mesh = SubResource("CylinderMesh_buohc")
-material = SubResource("StandardMaterial3D_kul4i")
+mesh = SubResource("CylinderMesh_rpdke")
+material = SubResource("StandardMaterial3D_33n3b")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Destination"]
 libraries = {
-&"": SubResource("AnimationLibrary_glinl")
+&"": SubResource("AnimationLibrary_ss60k")
 }
 autoplay = "bob"
 
