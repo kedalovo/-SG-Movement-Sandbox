@@ -31,6 +31,7 @@ edge_fade = 0.001
 
 [node name="Gravity Field" type="Node3D"]
 script = ExtResource("1_uoc06")
+gravity_force = null
 
 [node name="Area" type="Area3D" parent="."]
 collision_layer = 8

@@ -308,10 +308,19 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.26031, 0)
 [node name="Gravity Field" parent="Gravity Fields" instance=ExtResource("4_jcm6v")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 16.9677)
 field_size = Vector3(15, 15, 15)
+gravity_force = 9.8
 
 [node name="Gravity Field2" parent="Gravity Fields" instance=ExtResource("4_jcm6v")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.53023, -14.4393)
 field_size = Vector3(2, 2, 10)
+gravity_force = 9.8
+
+[node name="Gravity Field3" parent="Gravity Fields" instance=ExtResource("4_jcm6v")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -205.309, 10, -55.0451)
+field_size = Vector3(20, 20, 70)
+gravity_type = 1
+gravity_direction = Vector3(0, 1, 0)
+gravity_force = 4.0
 
 [node name="Player" parent="." instance=ExtResource("4_fwxkx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -180.163, 3, -86.1023)
@@ -546,6 +555,7 @@ update_scale = false
 
 [node name="Gravity Field" parent="Platforms/Platform7" instance=ExtResource("4_jcm6v")]
 field_size = Vector3(80, 30, 30)
+gravity_force = 9.8
 is_glowing = true
 
 [node name="Platform8" parent="Platforms" instance=ExtResource("5_fwxkx")]
@@ -970,6 +980,7 @@ size = Vector3(3, 1, 1)
 destination_pos = Vector3(0, 5, 5)
 time = 2.0
 rot_speed = Vector3(0.5, 0, 0)
+wait_time = 1.0
 trans_type = 0
 
 [node name="Shulker Tower" type="Node3D" parent="Platforms"]

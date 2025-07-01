@@ -22,12 +22,13 @@ var _wait_time: float = 0.0
 		_size = v
 		size = v
 		if Engine.is_editor_hint():
-			for s in $Body.get_children():
-				if s is CollisionShape3D:
-					s.shape = BoxShape3D.new()
-					s.shape.size = v
-					var m: CSGBox3D = s.get_child(0)
-					m.size = v
+			if get_node_or_null("Body") != null:
+				for s in $Body.get_children():
+					if s is CollisionShape3D:
+						s.shape = BoxShape3D.new()
+						s.shape.size = v
+						var m: CSGBox3D = s.get_child(0)
+						m.size = v
 
 @export var destination_pos: Vector3 = Vector3.ZERO:
 	get:
@@ -36,8 +37,9 @@ var _wait_time: float = 0.0
 		_destination_pos = v
 		destination_pos = v
 		if Engine.is_editor_hint():
-			destination = $Destination
-			destination.position = _destination_pos
+			if get_node_or_null("Destination") != null:
+				destination = $Destination
+				destination.position = _destination_pos
 
 @export var time: float = 1.0:
 	get:
