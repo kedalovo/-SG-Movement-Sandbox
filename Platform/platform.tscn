@@ -79,7 +79,7 @@ autoplay = "bob"
 [node name="Wait Timer" type="Timer" parent="."]
 one_shot = true
 
-[node name="Body" type="AnimatableBody3D" parent="."]
+[node name="Body" type="AnimatableBody3D" parent="." groups=["Floor"]]
 collision_mask = 22
 sync_to_physics = false
 

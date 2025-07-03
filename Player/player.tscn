@@ -25,7 +25,7 @@ mesh = SubResource("CapsuleMesh_sh265")
 shape = SubResource("CapsuleShape3D_4flbx")
 
 [node name="Camera Gymbal" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.507404, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 
 [node name="Position Offset" type="Marker3D" parent="Camera Gymbal"]
 

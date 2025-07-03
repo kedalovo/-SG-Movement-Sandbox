@@ -8,7 +8,7 @@ signal shooting(pos: Vector3, direction: Vector3)
 
 
 @export var speed: float = 5.0
-@export var jump_velocity: float = 4.5
+@export var jump_velocity: float = 5.0
 @export var acceleration: float = 15.0
 @export var max_speed: float = 8.0
 @export var sprint_speed: float = 4.0
@@ -80,7 +80,7 @@ func _input(event: InputEvent) -> void:
 		if e.is_pressed() and e.button_index == MOUSE_BUTTON_LEFT and can_shoot:
 			can_shoot = false
 			shoot_timer.start()
-			shooting.emit(global_position, shoot_reference.global_position - global_position)
+			shooting.emit(shoot_reference.global_position, shoot_reference.global_position - global_position + Vector3(0.0, -0.5, 0.0) * (up_marker.global_position - global_position).normalized())
 		elif e.is_pressed() and e.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			position_offset.position.z = clampf(position_offset.position.z + zoom_force, 0.0, zoom_limit)
 		elif e.is_pressed() and e.button_index == MOUSE_BUTTON_WHEEL_UP:
@@ -101,6 +101,8 @@ func _physics_process(delta: float) -> void:
 	# Handle jump.
 	if Input.is_action_just_pressed(&"move_jump") and (is_on_floor() or is_coyote_time) and !is_in_gravity:
 		velocity.y = jump_velocity
+	if Input.is_action_just_released(&"move_jump") and !is_on_floor() and !is_in_gravity:
+		pass
 	
 	if Input.is_action_pressed(&"rotate_clockwise") and is_in_gravity:
 		rotation.z -= delta / 2
