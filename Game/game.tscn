@@ -321,7 +321,7 @@ gravity_direction = Vector3(0, 1, 0)
 gravity_force = 4.0
 
 [node name="Player" parent="." instance=ExtResource("4_fwxkx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 air_control = 0.7
 mouse_sensitivity = 0.12
 
