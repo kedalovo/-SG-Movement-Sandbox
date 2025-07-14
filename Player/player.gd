@@ -35,7 +35,14 @@ signal shooting(pos: Vector3, direction: Vector3)
 @onready var coyote_timer: Timer = $"Coyote Timer"
 @onready var shoot_timer: Timer = $"Shoot Timer"
 
+@onready var anim_tree: AnimationTree = $Model/AnimationTree
+@onready var anim_playback: AnimationNodeStateMachinePlayback = $Model/AnimationTree.get(&"parameters/playback")
+@onready var anim_path_running: StringName = &"parameters/running/blend_position"
+@onready var anim_path_walking: StringName = &"parameters/walking/blend_position"
+
 var direction: Vector3 = Vector3.ZERO
+
+var anim_movement: Vector2 = Vector2.ZERO
 
 var checkpoint: Vector3 = Vector3(0.0, 3.0, 0.0)
 
@@ -56,7 +63,9 @@ var is_in_gravity: bool = false:
 		toggle_gravity(v)
 
 var is_moving: bool = false
+var is_running: bool = false
 var is_coyote_time: bool = false
+var has_jumped: bool = false
 var has_landed: bool = false
 var can_shoot: bool = true
 
@@ -91,6 +100,9 @@ func _physics_process(delta: float) -> void:
 	# Add the gravity.
 	if is_on_floor():
 		has_landed = true
+		if has_jumped:
+			has_jumped = false
+			anim_playback.travel(&"jumping_down")
 	else:
 		if !is_coyote_time and has_landed:
 			is_coyote_time = true
@@ -100,7 +112,7 @@ func _physics_process(delta: float) -> void:
 
 	# Handle jump.
 	if Input.is_action_just_pressed(&"move_jump") and (is_on_floor() or is_coyote_time) and !is_in_gravity:
-		velocity.y = jump_velocity
+		anim_playback.travel(&"jumping_up")
 	if Input.is_action_just_released(&"move_jump") and !is_on_floor() and !is_in_gravity:
 		pass
 	
@@ -115,10 +127,20 @@ func _physics_process(delta: float) -> void:
 	else:
 		is_moving = true
 	
+	anim_movement = anim_movement.move_toward(input_dir, delta * 5)
+	anim_tree.set(anim_path_walking, anim_movement)
+	anim_tree.set(anim_path_running, anim_movement)
+	
 	if Input.is_action_pressed(&"move_sprint") and !is_in_gravity:
+		is_running = true
 		additional_speed = move_toward(additional_speed, sprint_speed, delta * acceleration / 2)
+		anim_playback.travel(&"running")
 	elif is_on_floor():
 		additional_speed = move_toward(additional_speed, 0.0, delta * acceleration / 2)
+	
+	if !Input.is_action_pressed(&"move_sprint") and is_running:
+		is_running = false
+		anim_playback.travel(&"walking")
 	
 	direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	
@@ -151,6 +173,10 @@ func _physics_process(delta: float) -> void:
 		velocity = velocity.bounce(get_last_slide_collision().get_normal()) * bounce_factor
 
 
+func jump() -> void:
+	velocity.y = jump_velocity
+
+
 func toggle_gravity(on: bool) -> void:
 	if on:
 		get_tree().create_tween().tween_property(self, "rotation:x", camera_gymbal.rotation.x, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
@@ -164,6 +190,10 @@ func toggle_gravity(on: bool) -> void:
 func reset() -> void:
 	velocity = Vector3.ZERO
 	global_position = checkpoint
+
+
+func stop_jumping() -> void:
+	has_jumped = true
 
 
 func _on_coyote_timer_timeout() -> void:
