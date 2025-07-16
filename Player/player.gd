@@ -35,10 +35,14 @@ signal shooting(pos: Vector3, direction: Vector3)
 @onready var coyote_timer: Timer = $"Coyote Timer"
 @onready var shoot_timer: Timer = $"Shoot Timer"
 
+@onready var model: Node3D = $Model
+
 @onready var anim_tree: AnimationTree = $Model/AnimationTree
-@onready var anim_playback: AnimationNodeStateMachinePlayback = $Model/AnimationTree.get(&"parameters/playback")
-@onready var anim_path_running: StringName = &"parameters/running/blend_position"
-@onready var anim_path_walking: StringName = &"parameters/walking/blend_position"
+@onready var anim_playback: AnimationNodeStateMachinePlayback = $Model/AnimationTree.get(&"parameters/state_machine/playback")
+@onready var anim_locomotion_playback: AnimationNodeStateMachinePlayback = $Model/AnimationTree.get(&"parameters/state_machine/locomotion/playback")
+@onready var anim_jumping_playback: AnimationNodeStateMachinePlayback = $Model/AnimationTree.get(&"parameters/state_machine/jumping/playback")
+@onready var anim_path_running: StringName = &"parameters/state_machine/locomotion/running/blend_position"
+@onready var anim_path_walking: StringName = &"parameters/state_machine/locomotion/walking/blend_position"
 
 var direction: Vector3 = Vector3.ZERO
 
@@ -70,6 +74,10 @@ var has_landed: bool = false
 var can_shoot: bool = true
 
 
+func _ready() -> void:
+	model.hide()
+
+
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		if is_in_gravity:
@@ -92,17 +100,23 @@ func _input(event: InputEvent) -> void:
 			shooting.emit(shoot_reference.global_position, shoot_reference.global_position - global_position + Vector3(0.0, -0.5, 0.0) * (up_marker.global_position - global_position).normalized())
 		elif e.is_pressed() and e.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			position_offset.position.z = clampf(position_offset.position.z + zoom_force, 0.0, zoom_limit)
+			if position_offset.position.z > 0.0:
+				model.show()
 		elif e.is_pressed() and e.button_index == MOUSE_BUTTON_WHEEL_UP:
 			position_offset.position.z = clampf(position_offset.position.z - zoom_force, 0.0, zoom_limit)
+			if position_offset.position.z < 0.2:
+				position_offset.position.z = 0.0
+				model.hide()
 
 
 func _physics_process(delta: float) -> void:
 	# Add the gravity.
 	if is_on_floor():
-		has_landed = true
-		if has_jumped:
-			has_jumped = false
-			anim_playback.travel(&"jumping_down")
+		if !has_landed:
+			has_landed = true
+			if has_jumped:
+				has_jumped = false
+				anim_jumping_playback.travel(&"jumping_down")
 	else:
 		if !is_coyote_time and has_landed:
 			is_coyote_time = true
@@ -112,7 +126,7 @@ func _physics_process(delta: float) -> void:
 
 	# Handle jump.
 	if Input.is_action_just_pressed(&"move_jump") and (is_on_floor() or is_coyote_time) and !is_in_gravity:
-		anim_playback.travel(&"jumping_up")
+		anim_playback.travel(&"jumping")
 	if Input.is_action_just_released(&"move_jump") and !is_on_floor() and !is_in_gravity:
 		pass
 	
@@ -132,15 +146,16 @@ func _physics_process(delta: float) -> void:
 	anim_tree.set(anim_path_running, anim_movement)
 	
 	if Input.is_action_pressed(&"move_sprint") and !is_in_gravity:
-		is_running = true
+		if !is_running:
+			is_running = true
+			anim_locomotion_playback.travel(&"running")
 		additional_speed = move_toward(additional_speed, sprint_speed, delta * acceleration / 2)
-		anim_playback.travel(&"running")
 	elif is_on_floor():
 		additional_speed = move_toward(additional_speed, 0.0, delta * acceleration / 2)
 	
 	if !Input.is_action_pressed(&"move_sprint") and is_running:
 		is_running = false
-		anim_playback.travel(&"walking")
+		anim_locomotion_playback.travel(&"walking")
 	
 	direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	
