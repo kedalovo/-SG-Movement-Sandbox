@@ -114,9 +114,14 @@ func _physics_process(delta: float) -> void:
 	if is_on_floor():
 		if !has_landed:
 			has_landed = true
+			print("Has landed")
 			if has_jumped:
+				print("Reset jump")
 				has_jumped = false
 				anim_jumping_playback.travel(&"jumping_down")
+		else:
+			if is_running:
+				anim_locomotion_playback.travel(&"running")
 	else:
 		if !is_coyote_time and has_landed:
 			is_coyote_time = true
@@ -127,6 +132,7 @@ func _physics_process(delta: float) -> void:
 	# Handle jump.
 	if Input.is_action_just_pressed(&"move_jump") and (is_on_floor() or is_coyote_time) and !is_in_gravity:
 		anim_playback.travel(&"jumping")
+		print("Jumping")
 	if Input.is_action_just_released(&"move_jump") and !is_on_floor() and !is_in_gravity:
 		pass
 	
@@ -209,6 +215,9 @@ func reset() -> void:
 
 func stop_jumping() -> void:
 	has_jumped = true
+	if is_on_floor():
+		has_jumped = false
+		anim_jumping_playback.travel(&"jumping_down")
 
 
 func _on_coyote_timer_timeout() -> void:
