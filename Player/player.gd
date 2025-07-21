@@ -43,10 +43,13 @@ signal shooting(pos: Vector3, direction: Vector3)
 @onready var anim_jumping_playback: AnimationNodeStateMachinePlayback = $Model/AnimationTree.get(&"parameters/state_machine/jumping/playback")
 @onready var anim_path_running: StringName = &"parameters/state_machine/locomotion/running/blend_position"
 @onready var anim_path_walking: StringName = &"parameters/state_machine/locomotion/walking/blend_position"
+@onready var anim_path_backwards: StringName = &"parameters/state_machine/locomotion/backwards/blend_position"
 
 var direction: Vector3 = Vector3.ZERO
 
 var anim_movement: Vector2 = Vector2.ZERO
+#var rot_movement: Vector2 = Vector2.ZERO
+#var max_rot: Vector2 = Vector2(20.0, 20.0)
 
 var checkpoint: Vector3 = Vector3(0.0, 3.0, 0.0)
 
@@ -97,7 +100,8 @@ func _input(event: InputEvent) -> void:
 		if e.is_pressed() and e.button_index == MOUSE_BUTTON_LEFT and can_shoot:
 			can_shoot = false
 			shoot_timer.start()
-			shooting.emit(shoot_reference.global_position, shoot_reference.global_position - global_position + Vector3(0.0, -0.5, 0.0) * (up_marker.global_position - global_position).normalized())
+			var shooting_direction: = shoot_reference.global_position - camera_gymbal.global_position
+			shooting.emit(shoot_reference.global_position, shooting_direction)
 		elif e.is_pressed() and e.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			position_offset.position.z = clampf(position_offset.position.z + zoom_force, 0.0, zoom_limit)
 			if position_offset.position.z > 0.0:
@@ -110,13 +114,13 @@ func _input(event: InputEvent) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	# Add the gravity.
+	# Floor/landing detection and gravity.
 	if is_on_floor():
+		if anim_playback.get_current_node() == &"falling":
+			anim_playback.travel(&"locomotion")
 		if !has_landed:
 			has_landed = true
-			print("Has landed")
 			if has_jumped:
-				print("Reset jump")
 				has_jumped = false
 				anim_jumping_playback.travel(&"jumping_down")
 		else:
@@ -128,13 +132,19 @@ func _physics_process(delta: float) -> void:
 			has_landed = false
 			coyote_timer.start()
 		velocity += get_gravity() * delta
+		if is_in_gravity:
+			has_jumped = false
+			has_landed = false
+			anim_playback.travel(&"floating")
+		else:
+			if anim_playback.get_current_node() in [&"locomotion", &"floating"]:
+				anim_playback.travel(&"falling")
 
 	# Handle jump.
 	if Input.is_action_just_pressed(&"move_jump") and (is_on_floor() or is_coyote_time) and !is_in_gravity:
 		anim_playback.travel(&"jumping")
-		print("Jumping")
-	if Input.is_action_just_released(&"move_jump") and !is_on_floor() and !is_in_gravity:
-		pass
+	#if Input.is_action_just_released(&"move_jump") and !is_on_floor() and !is_in_gravity:
+		#pass
 	
 	if Input.is_action_pressed(&"rotate_clockwise") and is_in_gravity:
 		rotation.z -= delta / 2
@@ -148,10 +158,20 @@ func _physics_process(delta: float) -> void:
 		is_moving = true
 	
 	anim_movement = anim_movement.move_toward(input_dir, delta * 5)
+	
+	if anim_movement.y > 0 and anim_locomotion_playback.get_current_node() != &"backwards":
+		anim_locomotion_playback.travel(&"backwards")
+	elif anim_movement.y <= 0 and anim_locomotion_playback.get_current_node() == &"backwards":
+		if is_running:
+			anim_locomotion_playback.travel(&"running")
+		else:
+			anim_locomotion_playback.travel(&"walking")
+	
+	anim_tree.set(anim_path_backwards, anim_movement.x)
 	anim_tree.set(anim_path_walking, anim_movement)
 	anim_tree.set(anim_path_running, anim_movement)
 	
-	if Input.is_action_pressed(&"move_sprint") and !is_in_gravity:
+	if Input.is_action_pressed(&"move_sprint") and !is_in_gravity and anim_movement.y <= 0:
 		if !is_running:
 			is_running = true
 			anim_locomotion_playback.travel(&"running")
@@ -195,6 +215,7 @@ func _physics_process(delta: float) -> void:
 
 
 func jump() -> void:
+	print("Jumped")
 	velocity.y = jump_velocity
 
 

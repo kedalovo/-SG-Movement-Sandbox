@@ -44,3 +44,6 @@ layout_mode = 2
 
 [node name="Label3" type="Label" parent="VBoxContainer"]
 layout_mode = 2
+
+[node name="Label4" type="Label" parent="VBoxContainer"]
+layout_mode = 2
