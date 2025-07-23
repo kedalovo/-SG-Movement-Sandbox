@@ -37,6 +37,8 @@ signal shooting(pos: Vector3, direction: Vector3)
 
 @onready var model: Node3D = $Model
 
+@onready var rotation_dummy: Node3D = $"Rotation Dummy"
+
 @onready var anim_tree: AnimationTree = $Model/AnimationTree
 @onready var anim_playback: AnimationNodeStateMachinePlayback = $Model/AnimationTree.get(&"parameters/state_machine/playback")
 @onready var anim_locomotion_playback: AnimationNodeStateMachinePlayback = $Model/AnimationTree.get(&"parameters/state_machine/locomotion/playback")
@@ -48,8 +50,6 @@ signal shooting(pos: Vector3, direction: Vector3)
 var direction: Vector3 = Vector3.ZERO
 
 var anim_movement: Vector2 = Vector2.ZERO
-#var rot_movement: Vector2 = Vector2.ZERO
-#var max_rot: Vector2 = Vector2(20.0, 20.0)
 
 var checkpoint: Vector3 = Vector3(0.0, 3.0, 0.0)
 
@@ -84,11 +84,13 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		if is_in_gravity:
-			var right_dir: Vector3 = (right_marker.global_position - global_position).normalized()
-			var up_dir: Vector3 = (up_marker.global_position - global_position).normalized()
+			if rotation_dummy.rotation_degrees.y < 90 and rotation_dummy.rotation_degrees.y > -90:
+				rotation_dummy.rotate_object_local(Vector3.UP, deg_to_rad(-event.screen_relative.x) * mouse_sensitivity)
+			if rotation_dummy.rotation_degrees.x > 90 and rotation_dummy.rotation_degrees.x < -90:
+				rotation_dummy.rotate_object_local(Vector3.RIGHT, deg_to_rad(-event.screen_relative.y) * mouse_sensitivity)
 			
-			rotate(right_dir, deg_to_rad(-event.screen_relative.y) * mouse_sensitivity)
-			rotate(up_dir, deg_to_rad(-event.screen_relative.x) * mouse_sensitivity)
+			#rotate_object_local(Vector3.RIGHT, deg_to_rad(-event.screen_relative.y) * mouse_sensitivity)
+			#rotate_object_local(Vector3.UP, deg_to_rad(-event.screen_relative.x) * mouse_sensitivity)
 		else:
 			rotation.y += deg_to_rad(-event.screen_relative.x) * mouse_sensitivity
 			
@@ -208,6 +210,11 @@ func _physics_process(delta: float) -> void:
 				new_velocity = new_velocity.move_toward(Vector2.ZERO, delta * acceleration * air_friction)
 			velocity.x = new_velocity.x
 			velocity.z = new_velocity.y
+
+	#Handling rotation interpolation while in zero gravity
+	if is_in_gravity:
+		var temp := global_rotation
+		global_rotation = global_rotation.move_toward(rotation_dummy.global_rotation, delta)
 
 	var col := move_and_slide()
 	if col and is_in_gravity:
