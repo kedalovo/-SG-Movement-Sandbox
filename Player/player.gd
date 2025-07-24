@@ -51,6 +51,8 @@ var direction: Vector3 = Vector3.ZERO
 
 var anim_movement: Vector2 = Vector2.ZERO
 
+var target_rot: Vector2 = Vector2.ZERO
+
 var checkpoint: Vector3 = Vector3(0.0, 3.0, 0.0)
 
 var additional_speed: float = 0.0
@@ -84,10 +86,16 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		if is_in_gravity:
-			if rotation_dummy.rotation_degrees.y < 90 and rotation_dummy.rotation_degrees.y > -90:
-				rotation_dummy.rotate_object_local(Vector3.UP, deg_to_rad(-event.screen_relative.x) * mouse_sensitivity)
-			if rotation_dummy.rotation_degrees.x > 90 and rotation_dummy.rotation_degrees.x < -90:
-				rotation_dummy.rotate_object_local(Vector3.RIGHT, deg_to_rad(-event.screen_relative.y) * mouse_sensitivity)
+			if rotation_dummy.rotation_degrees.y < 90.0 and rotation_dummy.rotation_degrees.y > -90.0:
+				rotation_dummy.rotate_y(deg_to_rad(-event.screen_relative.x) * mouse_sensitivity)
+				target_rot.y += deg_to_rad(-event.screen_relative.x) * mouse_sensitivity
+			else:
+				rotation_dummy.rotation_degrees.y = clampf(rotation_dummy.rotation_degrees.y, -90.0, 90.0)
+			if rotation_dummy.rotation_degrees.x < 90.0 and rotation_dummy.rotation_degrees.x > -90.0:
+				rotation_dummy.rotate_x(deg_to_rad(-event.screen_relative.y) * mouse_sensitivity)
+				target_rot.x += deg_to_rad(-event.screen_relative.y) * mouse_sensitivity
+			else:
+				rotation_dummy.rotation_degrees.x = clampf(rotation_dummy.rotation_degrees.x, -90.0, 90.0)
 			
 			#rotate_object_local(Vector3.RIGHT, deg_to_rad(-event.screen_relative.y) * mouse_sensitivity)
 			#rotate_object_local(Vector3.UP, deg_to_rad(-event.screen_relative.x) * mouse_sensitivity)
@@ -116,7 +124,8 @@ func _input(event: InputEvent) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	# Floor/landing detection and gravity.
+	#region Floor/landing detection and gravity.
+	
 	if is_on_floor():
 		if anim_playback.get_current_node() == &"falling":
 			anim_playback.travel(&"locomotion")
@@ -141,18 +150,29 @@ func _physics_process(delta: float) -> void:
 		else:
 			if anim_playback.get_current_node() in [&"locomotion", &"floating"]:
 				anim_playback.travel(&"falling")
+	
+	#endregion
 
-	# Handle jump.
+	#region Handle jump.
+	
 	if Input.is_action_just_pressed(&"move_jump") and (is_on_floor() or is_coyote_time) and !is_in_gravity:
 		anim_playback.travel(&"jumping")
 	#if Input.is_action_just_released(&"move_jump") and !is_on_floor() and !is_in_gravity:
 		#pass
 	
+	#endregion
+	
+	#region Rotation (Z) in zero gravity
+	
 	if Input.is_action_pressed(&"rotate_clockwise") and is_in_gravity:
 		rotation.z -= delta / 2
 	if Input.is_action_pressed(&"rotate_counter_clockwise") and is_in_gravity:
 		rotation.z += delta / 2
+	
+	#endregion
 
+	#region Locomotion and animation handling
+	
 	var input_dir := Input.get_vector(&"move_left", &"move_right", &"move_forward", &"move_back")
 	if input_dir == Vector2.ZERO:
 		is_moving = false
@@ -210,15 +230,29 @@ func _physics_process(delta: float) -> void:
 				new_velocity = new_velocity.move_toward(Vector2.ZERO, delta * acceleration * air_friction)
 			velocity.x = new_velocity.x
 			velocity.z = new_velocity.y
+	
+	#endregion
 
-	#Handling rotation interpolation while in zero gravity
-	if is_in_gravity:
-		var temp := global_rotation
-		global_rotation = global_rotation.move_toward(rotation_dummy.global_rotation, delta)
+	#region Handling rotation interpolation while in zero gravity
+	
+	if is_in_gravity and rotation_dummy.rotation != Vector3.ZERO:
+		var temp := rotation
+		#global_rotation = global_rotation.move_toward(rotation_dummy.global_rotation, delta)
+		rotation = rotation.rotated(temp.cross(rotation_dummy.rotation).normalized(), delta)
+		#rotation = lerp(rotation, rotation_dummy.global_rotation, delta)
+		#rotation_dummy.global_rotation = rotation_dummy.global_rotation.move_toward(temp, delta)
+		#rotation_dummy.global_rotation = lerp(rotation_dummy.global_rotation, temp, delta)
+		rotation_dummy.rotation = rotation_dummy.rotation.rotated(-rotation_dummy.rotation.cross(temp).normalized(), delta)
+	
+	#endregion
 
+	#region Bounce off collisions while in zero gravity
+	
 	var col := move_and_slide()
 	if col and is_in_gravity:
 		velocity = velocity.bounce(get_last_slide_collision().get_normal()) * bounce_factor
+	
+	#endregion
 
 
 func jump() -> void:
