@@ -21,6 +21,7 @@ signal shooting(pos: Vector3, direction: Vector3)
 @export var zoom_force: float = 0.2
 
 @export_range(0.1, 2.0, 0.01) var mouse_sensitivity: float = 1.0
+@export var in_gravity_mouse_sensitivity: float = 0.07
 @export var max_head_angle: float = 75.0
 @export var min_head_angle: float = -75.0
 
@@ -30,14 +31,12 @@ signal shooting(pos: Vector3, direction: Vector3)
 @onready var right_marker: Marker3D = $"Right Marker"
 @onready var up_marker: Marker3D = $"Up Marker"
 @onready var shoot_reference: Marker3D = $"Camera Gymbal/Shoot Reference"
-@onready var position_offset: Marker3D = $"Camera Gymbal/Position Offset"
+@onready var position_offset: SpringArm3D = $"Camera Gymbal/Position Offset"
 
 @onready var coyote_timer: Timer = $"Coyote Timer"
 @onready var shoot_timer: Timer = $"Shoot Timer"
 
 @onready var model: Node3D = $Model
-
-@onready var rotation_dummy: Node3D = $"Rotation Dummy"
 
 @onready var anim_tree: AnimationTree = $Model/AnimationTree
 @onready var anim_playback: AnimationNodeStateMachinePlayback = $Model/AnimationTree.get(&"parameters/state_machine/playback")
@@ -86,19 +85,9 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		if is_in_gravity:
-			if rotation_dummy.rotation_degrees.y < 90.0 and rotation_dummy.rotation_degrees.y > -90.0:
-				rotation_dummy.rotate_y(deg_to_rad(-event.screen_relative.x) * mouse_sensitivity)
-				target_rot.y += deg_to_rad(-event.screen_relative.x) * mouse_sensitivity
-			else:
-				rotation_dummy.rotation_degrees.y = clampf(rotation_dummy.rotation_degrees.y, -90.0, 90.0)
-			if rotation_dummy.rotation_degrees.x < 90.0 and rotation_dummy.rotation_degrees.x > -90.0:
-				rotation_dummy.rotate_x(deg_to_rad(-event.screen_relative.y) * mouse_sensitivity)
-				target_rot.x += deg_to_rad(-event.screen_relative.y) * mouse_sensitivity
-			else:
-				rotation_dummy.rotation_degrees.x = clampf(rotation_dummy.rotation_degrees.x, -90.0, 90.0)
-			
-			#rotate_object_local(Vector3.RIGHT, deg_to_rad(-event.screen_relative.y) * mouse_sensitivity)
-			#rotate_object_local(Vector3.UP, deg_to_rad(-event.screen_relative.x) * mouse_sensitivity)
+			target_rot.x += deg_to_rad(-event.screen_relative.y) * in_gravity_mouse_sensitivity
+			target_rot.y += deg_to_rad(-event.screen_relative.x) * in_gravity_mouse_sensitivity
+			target_rot = clamp(target_rot, Vector2(-90.0, -90.0), Vector2(90.0, 90.0))
 		else:
 			rotation.y += deg_to_rad(-event.screen_relative.x) * mouse_sensitivity
 			
@@ -113,13 +102,13 @@ func _input(event: InputEvent) -> void:
 			var shooting_direction: = shoot_reference.global_position - camera_gymbal.global_position
 			shooting.emit(shoot_reference.global_position, shooting_direction)
 		elif e.is_pressed() and e.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			position_offset.position.z = clampf(position_offset.position.z + zoom_force, 0.0, zoom_limit)
-			if position_offset.position.z > 0.0:
+			position_offset.spring_length = clampf(position_offset.spring_length + zoom_force, 0.0, zoom_limit)
+			if position_offset.spring_length > 0.0:
 				model.show()
 		elif e.is_pressed() and e.button_index == MOUSE_BUTTON_WHEEL_UP:
-			position_offset.position.z = clampf(position_offset.position.z - zoom_force, 0.0, zoom_limit)
-			if position_offset.position.z < 0.2:
-				position_offset.position.z = 0.0
+			position_offset.spring_length = clampf(position_offset.spring_length - zoom_force, 0.0, zoom_limit)
+			if position_offset.spring_length < 0.2:
+				position_offset.spring_length = 0.0
 				model.hide()
 
 
@@ -235,14 +224,12 @@ func _physics_process(delta: float) -> void:
 
 	#region Handling rotation interpolation while in zero gravity
 	
-	if is_in_gravity and rotation_dummy.rotation != Vector3.ZERO:
-		var temp := rotation
-		#global_rotation = global_rotation.move_toward(rotation_dummy.global_rotation, delta)
-		rotation = rotation.rotated(temp.cross(rotation_dummy.rotation).normalized(), delta)
-		#rotation = lerp(rotation, rotation_dummy.global_rotation, delta)
-		#rotation_dummy.global_rotation = rotation_dummy.global_rotation.move_toward(temp, delta)
-		#rotation_dummy.global_rotation = lerp(rotation_dummy.global_rotation, temp, delta)
-		rotation_dummy.rotation = rotation_dummy.rotation.rotated(-rotation_dummy.rotation.cross(temp).normalized(), delta)
+	if is_in_gravity:
+		rotate_object_local(Vector3.RIGHT, target_rot.x * delta)
+		rotate_object_local(Vector3.UP, target_rot.y * delta)
+		target_rot.x -= target_rot.x * delta * 2.0
+		target_rot.y -= target_rot.y * delta * 2.0
+		pass
 	
 	#endregion
 
@@ -256,7 +243,6 @@ func _physics_process(delta: float) -> void:
 
 
 func jump() -> void:
-	print("Jumped")
 	velocity.y = jump_velocity
 
 
