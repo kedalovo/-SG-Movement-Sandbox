@@ -1,6 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://b81rxadrvply1"]
+[gd_scene load_steps=10 format=3 uid="uid://b81rxadrvply1"]
 
 [ext_resource type="Script" uid="uid://ddv4rsbf366vf" path="res://Pellet/pellet.gd" id="1_glmsb"]
+[ext_resource type="AudioStream" uid="uid://c2qwdyf6i811p" path="res://Pellet/Pellet Pop.wav" id="2_u0jda"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_22ug1"]
 transparency = 1
@@ -121,5 +122,9 @@ shape = SubResource("SphereShape3D_44i08")
 libraries = {
 &"": SubResource("AnimationLibrary_44i08")
 }
+
+[node name="Pop Sound" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("2_u0jda")
+volume_db = -7.0
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

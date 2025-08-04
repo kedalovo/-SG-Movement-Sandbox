@@ -7,6 +7,7 @@ class_name Pellet
 @onready var area: Area3D = $Area
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var mesh: CSGMesh3D = $CSGMesh3D
+@onready var pop_sound: AudioStreamPlayer3D = $"Pop Sound"
 
 
 @export var force: int = 0
@@ -34,6 +35,7 @@ func _on_body_entered(body: Node) -> void:
 
 
 func explode() -> void:
+	pop_sound.play()
 	for body in area.get_overlapping_bodies():
 		if body.is_in_group(&"Junk"):
 			body.apply_impulse((body.global_position - global_position).normalized() * repel_force)

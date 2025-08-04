@@ -45,6 +45,7 @@ signal shooting(pos: Vector3, direction: Vector3)
 @onready var anim_path_running: StringName = &"parameters/state_machine/locomotion/running/blend_position"
 @onready var anim_path_walking: StringName = &"parameters/state_machine/locomotion/walking/blend_position"
 @onready var anim_path_backwards: StringName = &"parameters/state_machine/locomotion/backwards/blend_position"
+@onready var step_sound: AudioStreamPlayer3D = $"Step Sound"
 
 var direction: Vector3 = Vector3.ZERO
 
@@ -268,9 +269,19 @@ func stop_jumping() -> void:
 		anim_jumping_playback.travel(&"jumping_down")
 
 
+func play_step() -> void:
+	step_sound.play()
+
+
 func _on_coyote_timer_timeout() -> void:
 	is_coyote_time = false
 
 
 func _on_shoot_timer_timeout() -> void:
 	can_shoot = true
+
+
+func _on_junk_detector_body_entered(body: Node3D) -> void:
+	if body is Junk:
+		velocity -= velocity * 0.5
+		body.play_sound()

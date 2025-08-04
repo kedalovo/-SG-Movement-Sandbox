@@ -1,4 +1,4 @@
-[gd_scene load_steps=50 format=3 uid="uid://bypwv3voslknq"]
+[gd_scene load_steps=51 format=3 uid="uid://bypwv3voslknq"]
 
 [ext_resource type="Script" uid="uid://cxc4k15g4v7se" path="res://Game/game.gd" id="1_bk3v5"]
 [ext_resource type="Texture2D" uid="uid://cxuxd1ybqe1mw" path="res://Resources/Skybox/Skybox.png" id="2_7raqb"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://bllfxbi22nu4k" path="res://Platform/platform.tscn" id="5_fwxkx"]
 [ext_resource type="Script" uid="uid://bv7dmxyjd1djj" path="res://Platform/platform.gd" id="6_oomkl"]
 [ext_resource type="PackedScene" uid="uid://cgeag00tu5uig" path="res://Checkpoint/checkpoint.tscn" id="6_qmv3x"]
+[ext_resource type="AudioStream" uid="uid://8egyrua0wdqu" path="res://Game/Ambient Sound.wav" id="8_buohc"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_jcm6v"]
 panorama = ExtResource("2_7raqb")
@@ -1141,6 +1142,12 @@ libraries = {
 &"": SubResource("AnimationLibrary_buohc")
 }
 autoplay = "sky_rotation"
+
+[node name="Ambient Audio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_buohc")
+volume_db = -10.0
+autoplay = true
+mix_target = 1
 
 [connection signal="shooting" from="Player" to="." method="_on_player_shooting"]
 [connection signal="timeout" from="Platforms/Platform7/Wait Timer" to="Platforms/Platform7" method="_on_wait_timer_timeout"]

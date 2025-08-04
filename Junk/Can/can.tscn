@@ -1,4 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://dk0nv4a8esght"]
+[gd_scene load_steps=5 format=3 uid="uid://dk0nv4a8esght"]
+
+[ext_resource type="Script" uid="uid://0ygu8emal1j8" path="res://Junk/junk.gd" id="1_yqsmo"]
+[ext_resource type="AudioStream" uid="uid://bexgfsnql6i4y" path="res://Junk/Junk Collision.wav" id="2_1gaj6"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_rdxvx"]
 top_radius = 0.1
@@ -14,11 +17,17 @@ radius = 0.1
 collision_layer = 4
 collision_mask = 23
 mass = 0.4
-can_sleep = false
-continuous_cd = true
+contact_monitor = true
+max_contacts_reported = 2
+script = ExtResource("1_yqsmo")
 
 [node name="CSGMesh3D" type="CSGMesh3D" parent="."]
 mesh = SubResource("CylinderMesh_rdxvx")
 
 [node name="CSGBakedCollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CylinderShape3D_yqsmo")
+
+[node name="Audio" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("2_1gaj6")
+volume_db = -10.0
+unit_size = 5.0
