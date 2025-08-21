@@ -74,6 +74,7 @@ var is_in_gravity: bool = false:
 var is_moving: bool = false
 var is_running: bool = false
 var is_coyote_time: bool = false
+var has_started_jumping: bool = false
 var has_jumped: bool = false
 var has_landed: bool = false
 var can_shoot: bool = true
@@ -147,8 +148,13 @@ func _physics_process(delta: float) -> void:
 	
 	if Input.is_action_just_pressed(&"move_jump") and (is_on_floor() or is_coyote_time) and !is_in_gravity:
 		anim_playback.travel(&"jumping")
-	#if Input.is_action_just_released(&"move_jump") and !is_on_floor() and !is_in_gravity:
-		#pass
+	if Input.is_action_pressed(&"move_jump"):
+		if has_started_jumping and velocity.y < jump_velocity:
+			velocity.y += jump_velocity / 10.0
+		else:
+			has_started_jumping = false
+	else:
+		has_started_jumping = false
 	
 	#endregion
 	
@@ -244,7 +250,8 @@ func _physics_process(delta: float) -> void:
 
 
 func jump() -> void:
-	velocity.y = jump_velocity
+	has_started_jumping = true
+	velocity.y = jump_velocity * 0.5
 
 
 func toggle_gravity(on: bool) -> void:
